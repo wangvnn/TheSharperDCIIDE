@@ -1,0 +1,4 @@
+C:\Users\Lenovo\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\KimHaiQuang\TheDCIBabyIDE\1.0\\TheDCIBabyIDE.dll
+C:\Users\Lenovo\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\KimHaiQuang\TheDCIBabyIDE\1.0\\TheDCIBabyIDE.pkgdef
+C:\Users\Lenovo\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\KimHaiQuang\TheDCIBabyIDE\1.0\\extension.vsixmanifest
+C:\Users\Lenovo\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\KimHaiQuang\TheDCIBabyIDE\1.0\\TheDCIBabyIDE.pdb
