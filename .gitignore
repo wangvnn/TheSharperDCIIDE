@@ -58,3 +58,6 @@ TheDCIBabyIDE/TheDCIBabyIDE_IntegrationTests/obj/
 # sou
 *.suo
 *.csproj.user
+
+# ide
+TheDCIBabyIDE.sln.ide/
