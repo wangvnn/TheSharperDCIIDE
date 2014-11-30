@@ -50,14 +50,13 @@ IventoDCI/obj/
 # baby ide bin obj
 TheDCIBabyIDE/bin/
 TheDCIBabyIDE/obj/
-TheDCIBabyIDE/TheDCIBabyIDE_UnitTests/bin/
-TheDCIBabyIDE/TheDCIBabyIDE_UnitTests/obj/
-TheDCIBabyIDE/TheDCIBabyIDE_IntegrationTests/bin/
-TheDCIBabyIDE/TheDCIBabyIDE_IntegrationTests/obj/
+TheDCIBabyIDE.Test/bin/
+TheDCIBabyIDE.Test/obj/
 
 # sou
 *.suo
 *.csproj.user
+*.dotSettings.user
 
 # ide
 TheDCIBabyIDE.sln.ide/

@@ -53,8 +53,11 @@ namespace KimHaiQuang.TheDCIBabyIDE
 
             _componentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
             _invisibleEditorManager = (IVsInvisibleEditorManager)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsInvisibleEditorManager));
-            _editorAdapter = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
-            _editorFactoryService = _componentModel.GetService<ITextEditorFactoryService>();
+            if (_componentModel != null)
+            {
+                _editorAdapter = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
+                _editorFactoryService = _componentModel.GetService<ITextEditorFactoryService>();
+            }
         }
 
         /// <summary>
