@@ -1,9 +1,0 @@
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\bin\Debug\TheDCIBabyIDE_IntegrationTests.dll
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\bin\Debug\TheDCIBabyIDE_IntegrationTests.pdb
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\bin\Debug\Microsoft.VSSDK.TestHostFramework.dll
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\bin\Debug\TheDCIBabyIDE.dll
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\bin\Debug\TheDCIBabyIDE.pdb
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\bin\Debug\Microsoft.VSSDK.TestHostFramework.pdb
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\obj\Debug\TheDCIBabyIDE_IntegrationTests.csprojResolveAssemblyReference.cache
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\obj\Debug\TheDCIBabyIDE_IntegrationTests.dll
-C:\Users\Kenvin-HaiQuang\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE\TheDCIBabyIDE_IntegrationTests\obj\Debug\TheDCIBabyIDE_IntegrationTests.pdb
