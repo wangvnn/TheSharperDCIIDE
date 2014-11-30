@@ -41,3 +41,20 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+# ivento DCI bin, obj
+IventoDCI/bin/
+IventoDCI/obj/
+
+# baby ide bin obj
+TheDCIBabyIDE/bin/
+TheDCIBabyIDE/obj/
+TheDCIBabyIDE/TheDCIBabyIDE_UnitTests/bin/
+TheDCIBabyIDE/TheDCIBabyIDE_UnitTests/obj/
+TheDCIBabyIDE/TheDCIBabyIDE_IntegrationTests/bin/
+TheDCIBabyIDE/TheDCIBabyIDE_IntegrationTests/obj/
+
+# sou
+*.suo
+*.csproj.user
