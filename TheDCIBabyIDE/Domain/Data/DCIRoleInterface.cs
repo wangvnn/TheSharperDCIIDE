@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
 {
-    internal class DCIRoleInterface
+    public class DCIRoleInterface
     {
         public string Signature { get; private set; }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
 {
-    internal class DCIRole
+    public class DCIRole
     {
         public IEnumerable<DCIRoleInterface> Interfaces { get; private set; }
         public IEnumerable<DCIRoleMethod> Methods { get; private set;  }

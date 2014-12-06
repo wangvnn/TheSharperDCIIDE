@@ -5,7 +5,7 @@ using System.Text;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
 {
-    internal class DCIRoleMethod
+    public class DCIRoleMethod
     {
         public string Signature { get; private set; }
         public string Code { get; private set; }

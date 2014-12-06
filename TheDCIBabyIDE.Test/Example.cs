@@ -10,9 +10,10 @@ namespace TheDCIBabyIDE.Test
 {
     class Math
     {
-        public int add(int a, int b)
+        public int sum { get; private set; }
+        public void add(int a)
         {
-            return a + b;
+            sum += a;
         }
     }
     public class TestMath : GivenWhenThenFixture
@@ -20,23 +21,43 @@ namespace TheDCIBabyIDE.Test
         public override void Specify()
         {
             
-            given("two numbers", () =>
+            given("a sum", () =>
             {
 
-                var a = 10;
-                var b = 5;
+                var sut = new Math();
 
-                when("add 2 numbers", () =>
+                sut.add(5);
+
+                when("add 5", () =>
                 {
-
-                    var sut = new Math();
-
-                    var c = sut.add(a, b);
+                    sut.add(5);
 
                     then("result should be correct", () =>
                     {
 
-                        expect(() => c == 15);
+                        expect(() => sut.sum == 10);
+                    });
+
+                    when("add 5", () =>
+                    {
+                        sut.add(5);
+
+                        then("result should be correct", () =>
+                        {
+
+                            expect(() => sut.sum == 15);
+                        });
+                    });
+                });
+
+                when("add 15", () =>
+                {
+                    sut.add(15);
+
+                    then("result should be correct", () =>
+                    {
+
+                        expect(() => sut.sum == 20);
                     });
                 });
             });
