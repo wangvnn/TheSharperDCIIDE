@@ -22,7 +22,8 @@ namespace TheDCIBabyIDE.Test.DomainTest.DataTest
 
                     then("it should have some roles", () => {
 
-                        expect(() => dciContext.Roles.Count > 0);
+                        expect(() => dciContext.Roles.Count == 3);
+                        expect(() => dciContext.Name.EndsWith("FrontLoadContext"));
 
                     });
                 });

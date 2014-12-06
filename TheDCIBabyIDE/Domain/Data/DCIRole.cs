@@ -10,5 +10,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
     {
         public IEnumerable<DCIRoleInterface> Interfaces { get; private set; }
         public IEnumerable<DCIRoleMethod> Methods { get; private set;  }
+        public string Name { get; private set; }
+
+        public DCIRole(string name){
+            Name = name;
+        }
     }
 }

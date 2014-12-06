@@ -1,6 +1,4 @@
-﻿
-using Ivento.Dci;
-using ProkonDCI.Domain.Data;
+﻿using ProkonDCI.Domain.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProkonDCI.Domain.Operation
 {
-    public sealed class FrontLoad 
+    public sealed class FrontLoadContext 
     {
         #region Usecase
         // Use case: Front Load Operation to calculate the early start time of all activities
@@ -29,23 +27,15 @@ namespace ProkonDCI.Domain.Operation
 
         #region Roles and RoleInterfaces
 
-        internal FrontLoad FrontLoader { get; private set; }
+        private FrontLoadContext FrontLoaderRole { get; private set; }
 
-        internal bool FindUnPlannedActivity()
-        {
-            UnPlannedActivity = (UnPlannedActivityRole) AllActivities.FirstOrDefault(a => a.EarlyStart == 0 &&
-                !Model.PredecessorsOf(a).Any(p => p.EarlyFinish == 0));
-
-            return UnPlannedActivity != null;
-        }
-
-        internal UnPlannedActivityRole UnPlannedActivity { get; private set; }
-        public interface UnPlannedActivityRole
+        private IUnPlannedActivityRole UnPlannedActivityRole { get; private set; }
+        public interface IUnPlannedActivityRole
         {
             int EarlyStart { get; set; }
         }
 
-        internal List<Activity> Predecessors
+        private List<Activity> Predecessors
         {
             get
             {
@@ -53,8 +43,8 @@ namespace ProkonDCI.Domain.Operation
             }
         }
 
-        internal List<Activity> AllActivities { get { return Model.AllActivities;  } }
-        internal int ProjectStart { get { return Model.ProjectStart;  } }
+        private List<Activity> AllActivitiesRole { get { return Model.AllActivities;  } }
+        private int ProjectStart { get { return Model.ProjectStart;  } }
 
         private ActivityDependencyGraph Model { get; set; }
 
@@ -62,10 +52,10 @@ namespace ProkonDCI.Domain.Operation
 
         #region Constructors and Role bindings
 
-        public FrontLoad(ActivityDependencyGraph model)
+        public FrontLoadContext(ActivityDependencyGraph model)
         {
             Model = model;
-            FrontLoader = this;
+            FrontLoaderRole = this;
         }
 
         #endregion
@@ -75,49 +65,50 @@ namespace ProkonDCI.Domain.Operation
         /// <summary>
         /// This method executes the Context/use case.
         /// </summary>
-        public void Execute()
+        public void FrontLoad()
         {
-            Context.Execute(FrontLoader.Plans, this);
+            FrontLoaderRole_Plans();
         }
 
         #endregion
-    }
 
-    #region RoleMethods
+        #region FrontLoaderRoleMethods
 
-    static class FrontLoad_FrontLoaderRoleMethods
-    {
-        public static void Plans(this FrontLoad frontLoader)
+        public void FrontLoaderRole_Plans()
         {
-            var c = Context.Current<FrontLoad>();
+            AllActivities.ForEach(a => a.EarlyStart = 0);
 
-            c.AllActivities.ForEach(a => a.EarlyStart = 0);
-
-            while (c.FrontLoader.FindUnPlannedActivity())
+            while (FrontLoaderRole_FindUnPlannedActivity())
             {
-                c.UnPlannedActivity.FrontLoad();
-
+                UnPlannedActivityRole_FrontLoad();
             }
         }
-    }
 
-    static class FrontLoad_UnPlannedActivityRoleMethods
-    {
-        public static void FrontLoad(this FrontLoad.UnPlannedActivityRole unplannedActivity)
+        private bool FrontLoaderRole_FindUnPlannedActivity()
         {
-            var c = Context.Current<FrontLoad>();
+            UnPlannedActivityRole = (IUnPlannedActivityRole) AllActivitiesRole.FirstOrDefault(a => a.EarlyStart == 0 &&
+                !Model.PredecessorsOf(a).Any(p => p.EarlyFinish == 0));
 
-            Activity maxPred = c.Predecessors.FirstOrDefault(p => p.EarlyFinish == c.Predecessors.Max(m => m.EarlyFinish));
+            return UnPlannedActivityRole != null;
+        }
+
+        #endregion
+
+        #region UnPlannedActivityRoleMethods
+
+        public void UnPlannedActivityRole_FrontLoad()
+        {
+            Activity maxPred = Predecessors.FirstOrDefault(p => p.EarlyFinish == Predecessors.Max(m => m.EarlyFinish));
             if (maxPred != null)
             {
-                c.UnPlannedActivity.EarlyStart = maxPred.EarlyFinish + 1;
+                UnPlannedActivityRole.EarlyStart = maxPred.EarlyFinish + 1;
             }
             else
             {
-                c.UnPlannedActivity.EarlyStart = c.ProjectStart;
+                UnPlannedActivityRole.EarlyStart = ProjectStart;
             }
         }
-    }    
 
-    #endregion
+        #endregion    
+    }
 }
