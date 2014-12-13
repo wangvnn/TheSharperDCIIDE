@@ -22,9 +22,13 @@ namespace TheDCIBabyIDE.Test.DomainTest.DataTest
 
                     then("it should have some roles", () => {
 
-                        expect(() => dciContext.Roles.Count == 3);
-                        expect(() => dciContext.Name.EndsWith("FrontLoadContext"));
 
+                        expect(() => dciContext.Name.EndsWith("FrontLoadContext"));
+                        expect(() => dciContext.Roles.Count == 3);
+
+                        expect(() => dciContext.Roles[0].Name.EndsWith("FrontLoaderRole"));
+                        expect(() => dciContext.Roles[1].Name.EndsWith("UnPlannedActivityRole"));
+                        expect(() => dciContext.Roles[2].Name.EndsWith("AllActivitiesRole"));
                     });
                 });
             });

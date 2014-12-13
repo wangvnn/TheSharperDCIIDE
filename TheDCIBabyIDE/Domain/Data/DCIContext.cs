@@ -31,6 +31,16 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
        
         }
 
+        private void LoadContextInfo(SyntaxTree tree)
+        {
+            var root = tree.GetRoot();
+            if (root != null)
+            {
+                var classNode = root.DescendantNodes().OfType<ClassDeclarationSyntax>().FirstOrDefault();
+                Name = classNode.Identifier.ToString();
+            }
+        }
+
         private void LoadRoleInfo(SyntaxTree tree)
         {
             Roles = new List<DCIRole>();
@@ -51,15 +61,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
             }
         }
 
-        private void LoadContextInfo(SyntaxTree tree)
-        {
-            var root = tree.GetRoot();
-            if (root != null)
-            {
-                var classNode = root.DescendantNodes().OfType<ClassDeclarationSyntax>().FirstOrDefault();
-                Name = classNode.Identifier.ToString();
-            }
-        }
 
         public string Name { get; private set; }
     }

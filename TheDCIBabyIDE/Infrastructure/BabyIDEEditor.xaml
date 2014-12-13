@@ -8,17 +8,20 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
-    <Grid>
+    <Grid x:Name="BabyIDEPanel">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
+            <ColumnDefinition MaxWidth="5" Width="5*"/>
             <ColumnDefinition />         
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition />
         </Grid.RowDefinitions>
-        <ContentControl Name="fullFile" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>
-        <StackPanel Name="interaction" Grid.Column="1" Grid.Row="0"/>        
-        <ContentControl Name="partialFile" Grid.Column="1" Grid.Row="1"/>
+        <ContentControl x:Name="FullCodeEditor" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>
+        <GridSplitter x:Name="FulllPartialSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Width="5" Height="100"/>
+        <Grid Grid.Column="2">
+        	<ContentControl x:Name="partialFile" Margin="147.5,0,-52.5,-200"/>
+        	<StackPanel x:Name="interaction" Grid.Row="0" Margin="147.5,0,-52.5,-200"/>
+        </Grid>
     </Grid>
 </UserControl>

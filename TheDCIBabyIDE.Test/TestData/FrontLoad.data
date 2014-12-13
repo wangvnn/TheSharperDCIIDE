@@ -10,6 +10,7 @@ namespace ProkonDCI.Domain.Operation
     public sealed class FrontLoadContext 
     {
         #region Usecase
+
         // Use case: Front Load Operation to calculate the early start time of all activities
         // Steps: User vs System
         // 1. User wants to see the early start of all Activities (trigger)
@@ -35,6 +36,13 @@ namespace ProkonDCI.Domain.Operation
             int EarlyStart { get; set; }
         }
 
+        private List<Activity> AllActivitiesRole { get { return Model.AllActivities;  } }
+        private int ProjectStartRole { get { return Model.ProjectStart;  } }
+
+        private ActivityDependencyGraph Model { get; set; }
+
+        #endregion
+
         private List<Activity> Predecessors
         {
             get
@@ -42,13 +50,6 @@ namespace ProkonDCI.Domain.Operation
                 return Model.PredecessorsOf((Activity)UnPlannedActivity);
             }
         }
-
-        private List<Activity> AllActivitiesRole { get { return Model.AllActivities;  } }
-        private int ProjectStart { get { return Model.ProjectStart;  } }
-
-        private ActivityDependencyGraph Model { get; set; }
-
-        #endregion
 
         #region Constructors and Role bindings
 
@@ -105,7 +106,7 @@ namespace ProkonDCI.Domain.Operation
             }
             else
             {
-                UnPlannedActivityRole.EarlyStart = ProjectStart;
+                UnPlannedActivityRole.EarlyStart = ProjectStartRole;
             }
         }
 
