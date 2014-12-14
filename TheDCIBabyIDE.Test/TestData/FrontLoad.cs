@@ -26,22 +26,26 @@ namespace ProkonDCI.Domain.Operation
 
         #endregion
 
-        #region Roles and RoleInterfaces
+        #region RolesAndInterfaces
 
-        private FrontLoadContext FrontLoaderRole { get; private set; }
+        private FrontLoadContext FrontLoader { get; private set; }
 
-        private IUnPlannedActivityRole UnPlannedActivityRole { get; private set; }
-        public interface IUnPlannedActivityRole
+        private UnPlannedActivityRole UnPlannedActivity { get; private set; }
+        public interface UnPlannedActivityRole
         {
             int EarlyStart { get; set; }
+            void TestMethod();
         }
 
-        private List<Activity> AllActivitiesRole { get { return Model.AllActivities;  } }
-        private int ProjectStartRole { get { return Model.ProjectStart;  } }
+        private List<Activity> AllActivities { get; private set; }
 
-        private ActivityDependencyGraph Model { get; set; }
+        private int ProjectStart { get; private set; }
 
         #endregion
+
+        #region Context
+
+        private ActivityDependencyGraph Model { get; set; }
 
         private List<Activity> Predecessors
         {
@@ -51,21 +55,14 @@ namespace ProkonDCI.Domain.Operation
             }
         }
 
-        #region Constructors and Role bindings
-
         public FrontLoadContext(ActivityDependencyGraph model)
         {
             Model = model;
-            FrontLoaderRole = this;
+            AllActivities = Model.AllActivities;
+            ProjectStart = Model.ProjectStart; ;
+            FrontLoader = this;
         }
 
-        #endregion
-
-        #region Interactions
-
-        /// <summary>
-        /// This method executes the Context/use case.
-        /// </summary>
         public void FrontLoad()
         {
             FrontLoaderRole_Plans();
@@ -73,40 +70,40 @@ namespace ProkonDCI.Domain.Operation
 
         #endregion
 
-        #region FrontLoaderRoleMethods
+        #region FrontLoader_Methods
 
-        public void FrontLoaderRole_Plans()
+        public void FrontLoader_Plans()
         {
             AllActivities.ForEach(a => a.EarlyStart = 0);
 
-            while (FrontLoaderRole_FindUnPlannedActivity())
+            while (FrontLoader_FindUnPlannedActivity())
             {
-                UnPlannedActivityRole_FrontLoad();
+                UnPlannedActivity_FrontLoad();
             }
         }
 
-        private bool FrontLoaderRole_FindUnPlannedActivity()
+        private bool FrontLoader_FindUnPlannedActivity()
         {
-            UnPlannedActivityRole = (IUnPlannedActivityRole) AllActivitiesRole.FirstOrDefault(a => a.EarlyStart == 0 &&
+            UnPlannedActivity = (UnPlannedActivityRole) AllActivities.FirstOrDefault(a => a.EarlyStart == 0 &&
                 !Model.PredecessorsOf(a).Any(p => p.EarlyFinish == 0));
 
-            return UnPlannedActivityRole != null;
+            return UnPlannedActivity != null;
         }
 
         #endregion
 
-        #region UnPlannedActivityRoleMethods
+        #region UnPlannedActivity_Methods
 
-        public void UnPlannedActivityRole_FrontLoad()
+        public void UnPlannedActivity_FrontLoad()
         {
             Activity maxPred = Predecessors.FirstOrDefault(p => p.EarlyFinish == Predecessors.Max(m => m.EarlyFinish));
             if (maxPred != null)
             {
-                UnPlannedActivityRole.EarlyStart = maxPred.EarlyFinish + 1;
+                UnPlannedActivity.EarlyStart = maxPred.EarlyFinish + 1;
             }
             else
             {
-                UnPlannedActivityRole.EarlyStart = ProjectStartRole;
+                UnPlannedActivity.EarlyStart = ProjectStart;
             }
         }
 

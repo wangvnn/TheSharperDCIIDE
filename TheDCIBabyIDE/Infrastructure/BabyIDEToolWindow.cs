@@ -30,7 +30,7 @@ namespace KimHaiQuang.TheDCIBabyIDE
     [Guid("7df8029b-658a-4eb8-81ce-fa45d0dd1def")]
     public class BabyIDEToolWindow : ToolWindowPane, IOleCommandTarget
     {
-        private string filePath = @"C:\Users\Lenovo\documents\visual studio 2013\Projects\test\test\Program.cs";
+        private string filePath = @"C:\Users\Lenovo\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE.Test\TestData\Christmas.cs";
 
         IComponentModel _componentModel;
         IVsInvisibleEditorManager _invisibleEditorManager;
@@ -59,7 +59,7 @@ namespace KimHaiQuang.TheDCIBabyIDE
                 _editorFactoryService = _componentModel.GetService<ITextEditorFactoryService>();
             }
         }
-
+        private IVsInvisibleEditor invisibleEditor = null;
         /// <summary>
         /// Creates an invisible editor for a given filePath. 
         /// If you're frequently creating projection buffers, it may be worth caching
@@ -67,7 +67,10 @@ namespace KimHaiQuang.TheDCIBabyIDE
         /// </summary>
         private IVsInvisibleEditor RegisterInvisibleEditor(string filePath)
         {
-            IVsInvisibleEditor invisibleEditor;
+            if (invisibleEditor != null)
+            {
+                return invisibleEditor;
+            }
             ErrorHandler.ThrowOnFailure(this._invisibleEditorManager.RegisterInvisibleEditor(
                 filePath
                 , pProject: null
@@ -143,7 +146,7 @@ namespace KimHaiQuang.TheDCIBabyIDE
             {
                 if (_projectedTextViewHost == null)
                 {
-                    _projectedTextViewHost = CreateEditor(filePath, start: 0, end: 200, createProjectedEditor: true);
+                    _projectedTextViewHost = CreateEditor(filePath, start: 0, end: 0, createProjectedEditor: true);
                 }
                 return _projectedTextViewHost;
             }
@@ -157,8 +160,8 @@ namespace KimHaiQuang.TheDCIBabyIDE
                 if (_myBabyIDEEditor == null)
                 {
                     _myBabyIDEEditor = new BabyIDEEditor();
-                    _myBabyIDEEditor.fullFile.Content = CompleteTextViewHost;
-                    _myBabyIDEEditor.partialFile.Content = ProjectedTextViewHost;
+                    _myBabyIDEEditor.GeneratedCode.Content = CompleteTextViewHost;
+                    _myBabyIDEEditor.ProjectedCode.Content = ProjectedTextViewHost;
                 }
                 return _myBabyIDEEditor;
             }

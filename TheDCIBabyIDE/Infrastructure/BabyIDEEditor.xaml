@@ -6,12 +6,12 @@
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
-             Name="MyToolWindow">
+             x:Name="TheBabyIDE" Height="768" Width="1024">
     <Grid x:Name="BabyIDEPanel">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="5*" MaxHeight="5"/>
+            <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid x:Name="SpecPanel">
@@ -21,23 +21,22 @@
         		<ColumnDefinition/>
         	</Grid.ColumnDefinitions>
         	<RichTextBox x:Name="Usecase">
-        		<FlowDocument>
-        			<Paragraph><Run Text="RichTextBox"/></Paragraph>
-        		</FlowDocument>
+        		<FlowDocument/>
         	</RichTextBox>
         	<GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
         	<StackPanel x:Name="Interaction" Grid.Row="0" Margin="0" Grid.Column="2"/>
         </Grid>
-        <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1"/>
-        <Grid x:Name="CodePanel" Grid.Row="2">
+        <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>
+        <Grid x:Name="CodePanel" Grid.Row="2" Grid.RowSpan="2">
         	<Grid.ColumnDefinitions>
         		<ColumnDefinition/>
         		<ColumnDefinition MaxWidth="5" Width="5*"/>
         		<ColumnDefinition/>
+        		<ColumnDefinition/>
         	</Grid.ColumnDefinitions>
         	<ContentControl x:Name="GeneratedCode" Grid.Column="0" Grid.Row="0" Margin="0"/>
         	<GridSplitter x:Name="GeneratedProjectedCode" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
-        	<ContentControl x:Name="ProjectedCode" Margin="0" Grid.Column="2"/>
+        	<ContentControl x:Name="ProjectedCode" Margin="0" Grid.Column="2" Grid.ColumnSpan="2"/>
         </Grid>
     </Grid>
 </UserControl>

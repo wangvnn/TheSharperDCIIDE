@@ -101,9 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="TestData\FrontLoad.data">
+    <Content Include="TestData\FrontLoad.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TheDCIBabyIDE\TheDCIBabyIDE.csproj">
