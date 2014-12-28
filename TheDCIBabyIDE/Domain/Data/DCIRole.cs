@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
 {
     public class DCIRole
     {
-        public IEnumerable<DCIRoleInterface> Interfaces { get; private set; }
-        public IEnumerable<DCIRoleMethod> Methods { get; private set;  }
-        public string Name { get; private set; }
+        public string Name { get; set; }
+        public DCIRoleInterface Interface { get; set; }
+        private Dictionary<string, DCIRoleMethod> _Methods = new Dictionary<string, DCIRoleMethod>();
+        public Dictionary<string, DCIRoleMethod> Methods { get { return _Methods; } }
 
-        public DCIRole(string name){
-            Name = name;
+        public DCIRole()
+        {
+        }
+
+        public void AddMethod(DCIRoleMethod method)
+        {
+            _Methods.Add(method.Name, method);
+        }
+
+        public void Remove(string name)
+        {
+            _Methods.Remove(name);
         }
     }
 }

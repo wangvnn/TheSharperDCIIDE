@@ -1,13 +1,34 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Text;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
 {
+
+    public struct DCIInterfaceSignature
+    {
+        public string Name { get; set; }
+        public Span InterfaceSpan { get; set; }
+    }
+
     public class DCIRoleInterface
     {
-        public string Signature { get; private set; }
+        public string Name { get; private set; }
+
+        public Dictionary<string, DCIInterfaceSignature> Signatures { get { return _Signatures; } }
+        private Dictionary<string, DCIInterfaceSignature> _Signatures = new Dictionary<string, DCIInterfaceSignature>();
+
+        public DCIRoleInterface()
+        {
+        }
+
+        public void AddSignature(DCIInterfaceSignature signature)
+        {
+            _Signatures.Add(signature.Name, signature);
+        }
+
+        public void RemoveSignature(string name)
+        {
+            _Signatures.Remove(name);
+        }
     }
 }

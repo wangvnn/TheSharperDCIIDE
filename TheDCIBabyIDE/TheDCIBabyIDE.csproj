@@ -154,6 +154,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Operation\ContextFileParsing.cs" />
     <Compile Include="Infrastructure\BabyIDEEditor.xaml.cs">
       <DependentUpon>BabyIDEEditor.xaml</DependentUpon>
     </Compile>
@@ -174,6 +175,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Infrastructure\BabyIDEVisualStudioServices.cs" />
+    <Compile Include="Usecases\Usecases.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
@@ -187,6 +189,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Domain\Data\ContextInfo.cd" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -219,7 +222,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Domain\Operation\" />
     <Folder Include="Presentation\Operation\" />
     <Folder Include="Presentation\ViewModel\" />
     <Folder Include="Presentation\View\" />

@@ -30,7 +30,7 @@ namespace KimHaiQuang.TheDCIBabyIDE
     [Guid("7df8029b-658a-4eb8-81ce-fa45d0dd1def")]
     public class BabyIDEToolWindow : ToolWindowPane, IOleCommandTarget
     {
-        private string filePath = @"C:\Users\Lenovo\Documents\GitHub\TheDCIBabyIDE\TheDCIBabyIDE.Test\TestData\Christmas.cs";
+        private string filePath = @"c:\users\lenovo\documents\visual studio 2013\Projects\forDCIBabyIDETesting\forDCIBabyIDETesting\Program.cs";
 
         IComponentModel _componentModel;
         IVsInvisibleEditorManager _invisibleEditorManager;
@@ -58,6 +58,10 @@ namespace KimHaiQuang.TheDCIBabyIDE
                 _editorAdapter = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
                 _editorFactoryService = _componentModel.GetService<ITextEditorFactoryService>();
             }
+
+
+    
+
         }
         private IVsInvisibleEditor invisibleEditor = null;
         /// <summary>
@@ -87,7 +91,6 @@ namespace KimHaiQuang.TheDCIBabyIDE
             //Language services, highlighting and error squiggles are hooked up to these editors
             //for us once we convert them to WpfTextViews. 
             var invisibleEditor = RegisterInvisibleEditor(filePath);
-
             var docDataPointer = IntPtr.Zero;
             Guid guidIVsTextLines = typeof(IVsTextLines).GUID;
 
@@ -98,33 +101,42 @@ namespace KimHaiQuang.TheDCIBabyIDE
 
             IVsTextLines docData = (IVsTextLines)Marshal.GetObjectForIUnknown(docDataPointer);
 
-            //Create a code window adapter
-            var codeWindow = _editorAdapter.CreateVsCodeWindowAdapter(BabyIDEVisualStudioServices.OLEServiceProvider);
-            ErrorHandler.ThrowOnFailure(codeWindow.SetBuffer(docData));
+            IVsTextBuffer buffer = (IVsTextBuffer)docData;
 
-            //Get a text view for our editor which we will then use to get the WPF control for that editor.
-            IVsTextView textView;
-            ErrorHandler.ThrowOnFailure(codeWindow.GetPrimaryView(out textView));
+            var textBuffer = _editorAdapter.GetDataBuffer(buffer);
 
-            if (createProjectedEditor)
-            {
-                //We add our own role to this text view. Later this will allow us to selectively modify
-                //this editor without getting in the way of Visual Studio's normal editors.
-                var roles = _editorFactoryService.DefaultRoles.Concat(new string[] { "CustomProjectionRole" });
-
-                var vsTextBuffer = docData as IVsTextBuffer;
-                var textBuffer = _editorAdapter.GetDataBuffer(vsTextBuffer);
-
-                textBuffer.Properties.AddProperty("StartPosition", start);
-                textBuffer.Properties.AddProperty("EndPosition", end);
-                var guid = VSConstants.VsTextBufferUserDataGuid.VsTextViewRoles_guid;
-                ((IVsUserData)codeWindow).SetData(ref guid, _editorFactoryService.CreateTextViewRoleSet(roles).ToString());
-            }
-
-
-            _currentlyFocusedTextView = textView;
-            var textViewHost = _editorAdapter.GetWpfTextViewHost(textView);
+            var textView = _editorFactoryService.CreateTextView(textBuffer);
+            _currentlyFocusedTextView = _editorAdapter.GetViewAdapter( textView);
+            var textViewHost = _editorFactoryService.CreateTextViewHost(textView, true);
             return textViewHost;
+            ////Create a code window adapter
+            //var codeWindow = _editorAdapter.CreateVsCodeWindowAdapter(BabyIDEVisualStudioServices.OLEServiceProvider);
+            //ErrorHandler.ThrowOnFailure(codeWindow.SetBuffer(docData));
+
+            ////Get a text view for our editor which we will then use to get the WPF control for that editor.
+            //IVsTextView textView;
+            //ErrorHandler.ThrowOnFailure(codeWindow.GetPrimaryView(out textView));
+
+
+            //if (createProjectedEditor)
+            //{
+            //    //We add our own role to this text view. Later this will allow us to selectively modify
+            //    //this editor without getting in the way of Visual Studio's normal editors.
+            //    var roles = _editorFactoryService.DefaultRoles.Concat(new string[] { "CustomProjectionRole" });
+
+            //    var vsTextBuffer = docData as IVsTextBuffer;
+            //    var textBuffer = _editorAdapter.GetDataBuffer(vsTextBuffer);
+
+            //    textBuffer.Properties.AddProperty("StartPosition", start);
+            //    textBuffer.Properties.AddProperty("EndPosition", end);
+            //    var guid = VSConstants.VsTextBufferUserDataGuid.VsTextViewRoles_guid;
+            //    ((IVsUserData)codeWindow).SetData(ref guid, _editorFactoryService.CreateTextViewRoleSet(roles).ToString());
+            //}
+
+
+            //_currentlyFocusedTextView = textView;
+            //var textViewHost = _editorAdapter.GetWpfTextViewHost(textView);
+            //return textViewHost;
         }
         private IWpfTextViewHost _completeTextViewHost;
         public IWpfTextViewHost CompleteTextViewHost
