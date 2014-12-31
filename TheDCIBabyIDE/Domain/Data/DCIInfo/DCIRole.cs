@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
+namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 {
     public class DCIRole
     {

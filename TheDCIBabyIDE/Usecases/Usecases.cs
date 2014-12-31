@@ -30,9 +30,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Usecases
         # Postcondition: DCI CONTEXT PARSER will return CONTEX INFO
         # Trigger: SYSTEM asks the PARSER to parse the FILE
         # Main Success Scenario:
-        # 1. SYSTEM asks the PARSER to parse the FILE
-        #   2. PARSER parses the FILE
-        #   3. PARSER return INFO
+        # 1. SYSTEM reads IDE SETTINGS to create READER
+        #   2. READER reads and returns INFO 
         */
     }
 }

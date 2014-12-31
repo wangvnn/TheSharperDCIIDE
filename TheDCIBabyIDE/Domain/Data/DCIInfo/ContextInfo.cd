@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIContext">
+  <Class Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo.DCIContext">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <Members>
       <Field Name="_Roles" Hidden="true" />
@@ -13,13 +13,13 @@
     </Compartments>
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAAAAgAAAAAQAAwAAAAAAAgQQAAAAAAA=</HashCode>
-      <FileName>Domain\Data\DCIContext.cs</FileName>
+      <FileName>Domain\Data\DCIInfo\DCIContext.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Roles" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIRole">
+  <Class Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo.DCIRole">
     <Position X="2.75" Y="0.75" Width="1.5" />
     <Members>
       <Field Name="_Methods" Hidden="true" />
@@ -29,7 +29,7 @@
     </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAABAABABAQAAAAAAIAAAAAAAAAAAEA=</HashCode>
-      <FileName>Domain\Data\DCIRole.cs</FileName>
+      <FileName>Domain\Data\DCIInfo\DCIRole.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Interface" />
@@ -38,7 +38,7 @@
       <Property Name="Methods" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIRoleInterface">
+  <Class Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo.DCIRoleInterface">
     <Position X="5.25" Y="1" Width="1.5" />
     <Members>
       <Field Name="_Signatures" Hidden="true" />
@@ -46,31 +46,31 @@
       <Method Name="DCIRoleInterface" Hidden="true" />
       <Method Name="RemoveSignature" Hidden="true" />
     </Members>
-    <AssociationLine Name="Signatures" Type="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInterfaceSignature">
+    <AssociationLine Name="Signatures" Type="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo.DCIInterfaceSignature">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.143" Y="0.093" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
       <HashCode>ABAAAAAAAAAAAAAAAAAIAAQAAAIAAABAAAAAAAAAAAA=</HashCode>
-      <FileName>Domain\Data\DCIRoleInterface.cs</FileName>
+      <FileName>Domain\Data\DCIInfo\DCIRoleInterface.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Signatures" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIRoleMethod">
+  <Class Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo.DCIRoleMethod">
     <Position X="2.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAE=</HashCode>
-      <FileName>Domain\Data\DCIRoleMethod.cs</FileName>
+      <FileName>Domain\Data\DCIInfo\DCIRoleMethod.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Struct Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInterfaceSignature">
+  <Struct Name="KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo.DCIInterfaceSignature">
     <Position X="5" Y="2.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Domain\Data\DCIRoleInterface.cs</FileName>
+      <FileName>Domain\Data\DCIInfo\DCIRoleInterface.cs</FileName>
     </TypeIdentifier>
   </Struct>
   <Font Name="Segoe UI" Size="9" />

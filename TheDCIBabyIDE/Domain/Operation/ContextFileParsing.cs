@@ -1,7 +1,16 @@
 ﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using KimHaiQuang.TheDCIBabyIDE.Domain.Data;
+using Microsoft.CodeAnalysis.CSharp;
+using System.IO;
+using System;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
+using Microsoft.VisualStudio.Text;
+using KimHaiQuang.TheDCIBabyIDE.Domain.Data.Settings;
+using KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo;
+using KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless;
+using KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Marvin;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Operation
 {
@@ -45,150 +54,68 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Operation
         /* USE CASE 2: Parse CONTEXT FILE
         # Primary Actor: SYSTEM
         # Precondition: CONTEXT FILE is valid
-        # Postcondition: DCI CONTEXT PARSER will return CONTEX INFO
+        # Postcondition: CONTEX INFO will be returned
         # Trigger: SYSTEM asks the PARSER to parse the FILE
         # Main Success Scenario:
-        # 1. SYSTEM asks the PARSER to parse the FILE
-        #   2. PARSER parses the FILE
-        #   3. PARSER return INFO
+        # 1. READER FACTORY reads IDE SETTINGS to create suitable READER
+        # 2. READER reads and returns INFO 
+        # Alternatives:
+        # 1.1 SETTINGS is unknown CONTEXT FILE TYPE
+        # 1.2 SYSTEM throws error message
         */
+        #endregion
+
+        #region Roles
+
+        private string FilePath { get; set; }
+        private ContextFileParsingContext DCIContextReaderFactory { get; set; }
+        private IDCIContextReader DCIContextReader { get; set; }
+        public interface IDCIContextReader
+        {
+            DCIContext Read();
+        }
+        private DCIBabyIDESettings IDESettings { get; set; }
+
         #endregion
 
         #region Context
 
-        public DCIContext Parse(string filename)
+        public ContextFileParsingContext(string filePath, DCIBabyIDESettings settings)
         {
-            var dciContext = new DCIContext();
-            return dciContext;
+            FilePath = filePath;
+            IDESettings = settings;
+            DCIContextReaderFactory = this;
+            DCIContextReader = DCIContextReaderFactory_GetReader();
+        }
+
+        public DCIContext Parse()
+        {
+            return DCIContextReader.Read();
         }
 
         #endregion
-        #region private properties
-        private List<RegionNodes> RegionNodesList = new List<RegionNodes>();
+
+        #region DCIContextReaderFactory_Methods
+
+        private IDCIContextReader DCIContextReaderFactory_GetReader()
+        {
+            switch (IDESettings.ContextFileTypeSettings)
+            {
+                case DCIBabyIDESettings.ContextFiletype.ContextFiletype_Injectionless:
+                {
+                    return new DCIInjectionlessContextReader(FilePath);
+                }
+                case DCIBabyIDESettings.ContextFiletype.ContextFiletype_Marvin:
+                {
+                    return new DCIMarvinContextReader(FilePath);
+                }
+                default:
+                {
+                    throw new Exception("Cannot create DCI Context Reader for unknown Context File Type");
+                }
+            }
+        }
+
         #endregion
-        //#region TODO parser algo
-        //public void LoadFromFile(string filePath)
-        //{
-        //    Filepath = filePath;
-
-        //    using (var file = File.OpenText(filePath))
-        //    {
-        //        var tree = CSharpSyntaxTree.ParseText(file.ReadToEnd());
-        //        var root = tree.GetRoot();
-        //        if (root != null)
-        //        {
-        //            LoadContextInfo(root);
-        //        }
-        //        else
-        //        {
-        //            throw new Exception("Cannot get root of syntext tree.");
-        //        }
-        //    }
-
-        //}
-
-        //private void LoadContextInfo(SyntaxNode root)
-        //{
-        //    var classNode = root.DescendantNodes().OfType<ClassDeclarationSyntax>().FirstOrDefault();
-        //    Name = classNode.Identifier.ToString();
-
-        //    LoadInfoFromRegions(root, classNode);
-        //}
-
-        //private void LoadInfoFromRegions(SyntaxNode root, SyntaxNode classNode)
-        //{
-        //    FindAllRegons(root);
-        //    LoadUsecaseInfo(classNode);
-        //    LoadRoleInfo(classNode);
-        //}
-
-        //private void FindAllRegons(SyntaxNode root)
-        //{
-        //    foreach (var regionDirective in root.DescendantTrivia().Where(i => i.IsKind(SyntaxKind.RegionDirectiveTrivia)))
-        //    {
-        //        RegionNodesList.Add(new RegionNodes { RegionDirective = regionDirective });
-        //    }
-
-        //    var count = 0;
-        //    foreach (var endRegionDirective in root.DescendantTrivia().Where(i => i.IsKind(SyntaxKind.EndRegionDirectiveTrivia)))
-        //    {
-        //        RegionNodesList[count++].EndRegionDirective = endRegionDirective;
-        //    }
-        //    foreach (var node in root.DescendantNodes().Where(i => i is MemberDeclarationSyntax || i is StatementSyntax))
-        //    {
-        //        foreach (var regionNodes in RegionNodesList)
-        //        {
-        //            regionNodes.AddNode(node);
-        //        }
-        //    }
-        //}
-
-        //private void LoadUsecaseInfo(SyntaxNode classNode)
-        //{
-        //    var usecaseRegion = RegionNodesList.Where(r => r.RegionName.Contains("Usecase")).FirstOrDefault();
-        //    if (usecaseRegion != null)
-        //    {
-        //        Usecase = new TextSpan(usecaseRegion.RegionSpan.Start, usecaseRegion.RegionSpan.Length);
-        //    }
-        //}
-
-        //private void LoadRoleInfo(SyntaxNode classNode)
-        //{
-        //    Roles = new List<DCIRole>();
-
-        //    var roleRegion = RegionNodesList.Where(r => r.RegionName.Contains("RolesAndInterfaces")).FirstOrDefault();
-        //    if (roleRegion != null)
-        //    {
-        //        foreach (var node in roleRegion.Nodes)
-        //        {
-        //            if (node.IsKind(SyntaxKind.PropertyDeclaration) &&
-        //                classNode == node.Parent)
-        //            {
-        //                var property = node as PropertyDeclarationSyntax;
-        //                var newRole = new DCIRole(property.Identifier.ToString());
-        //                Roles.Add(newRole);
-        //                LoadRoleInterface(classNode, roleRegion, property, newRole);
-        //            }
-        //        }
-        //    }
-
-        //}
-
-        //private void LoadRoleInterface(SyntaxNode classNode, RegionNodes roleRegion, PropertyDeclarationSyntax roleNode, DCIRole role)
-        //{
-        //    foreach (var node in roleRegion.Nodes)
-        //    {
-        //        if (node.IsKind(SyntaxKind.InterfaceDeclaration) &&
-        //            classNode == node.Parent)
-        //        {
-        //            var interfaceNode = node as InterfaceDeclarationSyntax;
-        //            var type = roleNode.Type as IdentifierNameSyntax;
-
-        //            if (type != null && type.Identifier.ToString().Equals(interfaceNode.Identifier.ToString()))
-        //            {
-        //                var newInterface = new DCIRoleInterface(interfaceNode.Identifier.ToString());
-        //                role.Interface = newInterface;
-        //                foreach (var member in interfaceNode.Members)
-        //                {
-        //                    var property = member as PropertyDeclarationSyntax;
-        //                    var method = member as MethodDeclarationSyntax;
-        //                    var newInterfaceSignature = new InterfaceSignature();
-
-        //                    var start = property != null ? property.Span.Start : method.Span.Start;
-        //                    var length = property != null ? property.Span.Length : method.Span.Length;
-
-        //                    newInterfaceSignature.Identifier = property != null ? property.Identifier.ToString() : method.Identifier.ToString();
-        //                    newInterfaceSignature.Span = new TextSpan(start, length);
-
-        //                    newInterface.AddSignature(newInterfaceSignature);
-        //                }
-        //            }
-
-
-        //        }
-        //    }
-        //}
-        //#endregion
-
     }
 }

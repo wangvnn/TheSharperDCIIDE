@@ -26,7 +26,7 @@ namespace ProkonDCI.Domain.Operation
 
         #endregion
 
-        #region RolesAndInterfaces
+        #region Roles
 
         private FrontLoadContext FrontLoader { get; private set; }
 

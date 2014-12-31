@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.Text;
 using System.Collections.Generic;
 
-namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
+namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 {
 
     public struct DCIInterfaceSignature
@@ -12,7 +12,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
 
     public class DCIRoleInterface
     {
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         public Dictionary<string, DCIInterfaceSignature> Signatures { get { return _Signatures; } }
         private Dictionary<string, DCIInterfaceSignature> _Signatures = new Dictionary<string, DCIInterfaceSignature>();

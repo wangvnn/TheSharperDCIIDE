@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.Text;
 
-namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data
+namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 {
     public class DCIRoleMethod
     {
