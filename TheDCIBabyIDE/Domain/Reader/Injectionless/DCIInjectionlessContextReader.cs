@@ -16,56 +16,57 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
     {
         #region Usecase
 
-        /* Usecase Parse DCI INJECTIONLESS CONTEXT FILE
-        # Steps:
+        /* USE CASE 2: Read INJECTIONLESS CONTEXT FILE
+        # Primary Actor: SYSTEM
+        # Precondition: CONTEXT FILE is valid
+        # Postcondition: DCI CONTEXT READER will return CONTEX INFO
+        # Trigger: SYSTEM asks the CONTEXT READER to read CONTEXT FILE
+        # Main Success Scenario:
         # 1. REGION READER reads all the REGIONS
         # 2. CONTEXT READER reads CONTEXT INFO
         # 3. USECASE READER reads USECASE INFO
         # 4. ROLE READER reads ROLE INFO
-        # 5. CONTEXT READER returns CONTEXT MODEL
         */
 
         #endregion
 
         #region Roles
 
-        private string FilePath { get; set; }
-        private DCIContext DCIContextModel { get; set; }
+         private DCIContext ContextFileModel { get; set; }
 
         private List<RegionNodes> RegionReader { get; set; }
-        private DCIInjectionlessContextReader ContextReader { get; set; }
-        private DCIInjectionlessContextReader UsecaseReader { get; set; }
-        private DCIInjectionlessContextReader RoleReader { get; set; }
+
+        private DCIContext ContextReader { get; set; }
+        private DCIContext UsecaseReader { get; set; }
+        private DCIContext RoleReader { get; set; }
 
         #endregion
 
         #region Context
 
-        public DCIInjectionlessContextReader(string filePath)
+        public DCIInjectionlessContextReader(DCIContext contextFileModel)
         {
-            FilePath = filePath;
-            DCIContextModel = new DCIContext();
+            ContextFileModel = contextFileModel;
 
             RegionReader =  new List<RegionNodes>();
-            ContextReader = this;
-            UsecaseReader = this;
-            RoleReader = this;
+
+            ContextReader = contextFileModel;
+            UsecaseReader = contextFileModel;
+            RoleReader = contextFileModel;
         }
 
-        public DCIContext Read()
+        public void Read(string filePath)
         {
-            RegionReader_Read();
-
-            return DCIContextModel;
+            RegionReader_Read(filePath);
         }
 
         #endregion
 
         #region RegionReader_Methods
 
-        private void RegionReader_Read()
+        private void RegionReader_Read(string filePath)
         {
-            using (var file = File.OpenText(FilePath))
+            using (var file = File.OpenText(filePath))
             {
                 var tree = CSharpSyntaxTree.ParseText(file.ReadToEnd());
                 var root = tree.GetRoot();
@@ -115,12 +116,12 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
         private void ContextReader_Read(ClassDeclarationSyntax parentNode)
         {
-            DCIContextModel.Name = parentNode.Identifier.ToString();
+            ContextFileModel.Name = parentNode.Identifier.ToString();
 
             var contextRegion = RegionReader.Where(r => r.RegionName.Contains("Context")).FirstOrDefault();
             if (contextRegion != null)
             {
-                DCIContextModel.ContextSpan = new Span(contextRegion.RegionSpan.Start, contextRegion.RegionSpan.Length);
+                ContextFileModel.ContextSpan = new Span(contextRegion.RegionSpan.Start, contextRegion.RegionSpan.Length);
             }
         }
 
@@ -133,7 +134,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
             var usecaseRegion = RegionReader.Where(r => r.RegionName.Contains("Usecase")).FirstOrDefault();
             if (usecaseRegion != null)
             {
-                DCIContextModel.UsecaseSpan = new Span(usecaseRegion.RegionSpan.Start, usecaseRegion.RegionSpan.Length);
+                ContextFileModel.UsecaseSpan = new Span(usecaseRegion.RegionSpan.Start, usecaseRegion.RegionSpan.Length);
             }
         }
 
@@ -157,7 +158,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
                         var newRole = new DCIRole();
                         newRole.Name = roleNode.Identifier.ToString();
-                        DCIContextModel.AddRole(newRole);
+                        ContextFileModel.AddRole(newRole);
 
                         RoleReader_ReadInterface(newRole, roleRegion, roleNodeTypeName, parentNode);
                         RoleReader_ReadMethods(newRole, parentNode);

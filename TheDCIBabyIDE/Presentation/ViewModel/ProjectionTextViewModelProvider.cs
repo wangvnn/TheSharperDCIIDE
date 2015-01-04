@@ -9,14 +9,14 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Projection;
 using Microsoft.VisualStudio.Utilities;
  
-namespace CKimHaiQuang.TheDCIBabyIDE
+namespace CKimHaiQuang.TheDCIBabyIDE.ViewModel
 {
     /// <summary>
     /// Whenever CSharp WpfTextViews are created with the CustomProjectionRole role
     /// this class will run and create a custom text view model for the WpfTextView
     /// </summary>
     [Export(typeof(ITextViewModelProvider)), ContentType("CSharp"), TextViewRole("CustomProjectionRole")]
-    internal class BabyIDEProjectionTextViewModelProvider : ITextViewModelProvider
+    internal class ProjectionTextViewModelProvider : ITextViewModelProvider
     {
         public ITextViewModel CreateTextViewModel(ITextDataModel dataModel, ITextViewRoleSet roles)
         {

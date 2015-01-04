@@ -7,12 +7,12 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Marvin
     public class DCIMarvinContextReader : 
         ContextFileParsingContext.IDCIContextReader
     {
-        public DCIMarvinContextReader(string filePath)
+        public DCIMarvinContextReader(DCIContext contextFileModel)
         {
             throw new Exception("No implementation");
         }
 
-        public DCIContext Read()
+        public DCIContext Read(string filePath)
         {
             throw new Exception("No implementation");
         }

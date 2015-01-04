@@ -40,8 +40,10 @@
          group as the part of a menu contained between two lines. The parent of a group 
          must be a menu. -->
     <Groups>
-
-
+      <Group guid="guidTheDCIBabyIDECmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN"/>
+      </Group>
+    
     </Groups>
     
     <!--Buttons section. -->
@@ -58,10 +60,15 @@
 
 
       <Button guid="guidTheDCIBabyIDECmdSet" id="cmdidDCIBabyIDE" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+        <Parent guid="guidTheDCIBabyIDECmdSet" id="MyMenuGroup"/>
         <Icon guid="guidImages" id="bmpPic2" />
+        
+        <!-- the 2 lines below set the default visibility-->
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+      
         <Strings>
-          <ButtonText>DCI Baby IDE</ButtonText>
+          <ButtonText>Open in DCI Baby IDE</ButtonText>
         </Strings>
       </Button>
 

@@ -3,11 +3,16 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
-using Microsoft.Win32;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using System.IO;
+using KimHaiQuang.TheDCIBabyIDE.Services;
+using KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Editor;
+using Microsoft.VisualStudio.Text.Editor;
+using KimHaiQuang.TheDCIBabyIDE.View;
 
 namespace KimHaiQuang.TheDCIBabyIDE
 {
@@ -32,8 +37,11 @@ namespace KimHaiQuang.TheDCIBabyIDE
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(BabyIDEToolWindow))]
     [Guid(GuidList.guidTheDCIBabyIDEPkgString)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     public sealed class BabyIDEPackage : Package
     {
+        #region Infrastructure
+
         /// <summary>
         /// Default constructor of the package.
         /// Inside this method you can place any initialization code that does not require 
@@ -43,15 +51,94 @@ namespace KimHaiQuang.TheDCIBabyIDE
         /// </summary>
         public BabyIDEPackage()
         {
+            WhenConstructPackage();
+        }
+
+        ~BabyIDEPackage()
+        {
+            Dispose(false);
+        }
+
+        private bool _Disposed = false; // to detect redundant calls
+        protected override void Dispose(bool disposing)
+        {
+            if (!_Disposed)
+            {
+                if (disposing)
+                {
+                    WhenDisposeResource();
+                }
+
+                // new shared cleanup logic
+                _Disposed = true;
+            }
+
+            base.Dispose(disposing);
+        }
+
+
+        /// <summary>
+        /// Initialization of the package; this method is called right after the package is sited, so this is the place
+        /// where you can put all the initialization code that rely on services provided by VisualStudio.
+        /// </summary>
+        protected override void Initialize()
+        {
+            WhenInitializePackage();
+        }
+
+        #endregion
+
+        #region Implementations
+
+        private void WhenConstructPackage()
+        {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
         }
 
-        /// <summary>
-        /// This function is called when the user clicks the menu item that shows the 
-        /// tool window. See the Initialize method to see how the menu item is associated to 
-        /// this function using the OleMenuCommandService service and the MenuCommand class.
-        /// </summary>
-        private void ShowToolWindow(object sender, EventArgs e)
+        private void WhenInitializePackage()
+        {
+            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+            base.Initialize();
+
+            Setup();
+
+            RegisterCommand();
+        }
+
+        private void RegisterCommand()
+        {
+            // Add our command handlers for menu (commands must exist in the .vsct file)
+            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (null != mcs)
+            {
+                // Create the command for the tool window
+                CommandID toolwndCommandID = new CommandID(GuidList.guidTheDCIBabyIDECmdSet, (int)PkgCmdIDList.cmdidDCIBabyIDE);
+
+                var menuItem = new OleMenuCommand(WhenShowToolWindow, toolwndCommandID);
+                menuItem.BeforeQueryStatus += MenuCommand_BeforeQueryStatus;
+
+                mcs.AddCommand(menuItem);
+            }
+        }
+
+        private void Setup()
+        {
+            VisualStudioServices.ServiceProvider = this;
+            VisualStudioServices.OLEServiceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider)VisualStudioServices.ServiceProvider.GetService(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider));
+
+            VisualStudioServices.ComponentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
+
+            EditorService.Create(VisualStudioServices.ServiceProvider, VisualStudioServices.OLEServiceProvider);
+            ProjectSelectionService.Create();
+        }
+
+        private void WhenDisposeResource()
+        {
+            EditorService.Destroy();
+            ProjectSelectionService.Destroy();
+        }
+
+        private void WhenShowToolWindow(object sender, EventArgs e)
         {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
@@ -61,37 +148,40 @@ namespace KimHaiQuang.TheDCIBabyIDE
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
+
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
-
-        /////////////////////////////////////////////////////////////////////////////
-        // Overridden Package Implementation
-        #region Package Members
-
-        /// <summary>
-        /// Initialization of the package; this method is called right after the package is sited, so this is the place
-        /// where you can put all the initialization code that rely on services provided by VisualStudio.
-        /// </summary>
-        protected override void Initialize()
+        private void MenuCommand_BeforeQueryStatus(object sender, EventArgs e)
         {
-            Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
-            base.Initialize();
-
-            // Add our command handlers for menu (commands must exist in the .vsct file)
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if ( null != mcs )
+            // get the menu that fired the event
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand != null)
             {
-                // Create the command for the tool window
-                CommandID toolwndCommandID = new CommandID(GuidList.guidTheDCIBabyIDECmdSet, (int)PkgCmdIDList.cmdidDCIBabyIDE);
-                MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
-                mcs.AddCommand( menuToolWin );
-            }
-            BabyIDEVisualStudioServices.ServiceProvider = this;
-            BabyIDEVisualStudioServices.OLEServiceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider)BabyIDEVisualStudioServices.ServiceProvider.GetService(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider));
-        }
-        #endregion
+                // start by assuming that the menu will not be shown
+                menuCommand.Visible = false;
+                menuCommand.Enabled = false;
 
+                IVsHierarchy hierarchy = null;
+                uint itemid = VSConstants.VSITEMID_NIL;
+
+                if (!ProjectSelectionService.Instance.IsSingleProjectItemSelection(out hierarchy, out itemid)) return;
+                // Get the file path
+                string itemFullPath = ProjectSelectionService.Instance.GetItemFullPath(hierarchy, itemid);
+
+                var transformFileInfo = new FileInfo(itemFullPath);
+
+                // then check if the file is named 'web.config'
+                bool isWebConfig = transformFileInfo.Extension.Contains("cs");
+                // if not leave the menu hidden
+                if (!isWebConfig) return;
+
+                menuCommand.Visible = true;
+                menuCommand.Enabled = true;
+            }
+        }
+
+        #endregion
     }
 }

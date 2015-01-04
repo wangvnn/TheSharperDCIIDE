@@ -11,6 +11,7 @@ using KimHaiQuang.TheDCIBabyIDE.Domain.Data.Settings;
 using KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo;
 using KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless;
 using KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Marvin;
+using KimHaiQuang.TheDCIBabyIDE.Presentation.Operation;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Operation
 {
@@ -48,7 +49,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Operation
         }
     }
 
-    public class ContextFileParsingContext
+    public class ContextFileParsingContext :
+        ContextFileOpeningContext.IContextFileParserRole
     {
         #region Usecase
         /* USE CASE 2: Parse CONTEXT FILE
@@ -67,30 +69,33 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Operation
 
         #region Roles
 
-        private string FilePath { get; set; }
         private ContextFileParsingContext DCIContextReaderFactory { get; set; }
         private IDCIContextReader DCIContextReader { get; set; }
         public interface IDCIContextReader
         {
-            DCIContext Read();
+            DCIContext Read(string filePath);
         }
-        private DCIBabyIDESettings IDESettings { get; set; }
+        private BabyIDESettings IDESettings { get; set; }
+        private DCIContext ContextFileModel = null;
 
         #endregion
 
         #region Context
 
-        public ContextFileParsingContext(string filePath, DCIBabyIDESettings settings)
+        public ContextFileParsingContext(BabyIDESettings settings)
         {
-            FilePath = filePath;
             IDESettings = settings;
+            ContextFileModel = new DCIContext();
+
             DCIContextReaderFactory = this;
             DCIContextReader = DCIContextReaderFactory_GetReader();
         }
 
-        public DCIContext Parse()
+        public DCIContext Parse(string filePath)
         {
-            return DCIContextReader.Read();
+            DCIContextReader.Read(filePath);
+
+            return ContextFileModel;
         }
 
         #endregion
@@ -101,13 +106,13 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Operation
         {
             switch (IDESettings.ContextFileTypeSettings)
             {
-                case DCIBabyIDESettings.ContextFiletype.ContextFiletype_Injectionless:
+                case BabyIDESettings.ContextFiletype.ContextFiletype_Injectionless:
                 {
-                    return new DCIInjectionlessContextReader(FilePath);
+                    return new DCIInjectionlessContextReader(ContextFileModel);
                 }
-                case DCIBabyIDESettings.ContextFiletype.ContextFiletype_Marvin:
+                case BabyIDESettings.ContextFiletype.ContextFiletype_Marvin:
                 {
-                    return new DCIMarvinContextReader(FilePath);
+                    return new DCIMarvinContextReader(ContextFileModel);
                 }
                 default:
                 {

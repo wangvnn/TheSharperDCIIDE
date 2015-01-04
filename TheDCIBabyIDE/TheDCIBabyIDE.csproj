@@ -154,20 +154,25 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\Data\Settings\DCIBabyIDESettings.cs" />
-    <Compile Include="Domain\Operation\ContextFileParsing.cs" />
+    <Compile Include="Domain\Data\Settings\BabyIDESettings.cs" />
+    <Compile Include="Domain\Operation\ContextFileParsingContext.cs" />
     <Compile Include="Domain\Reader\Injectionless\DCIInjectionlessContextReader.cs" />
     <Compile Include="Domain\Reader\Marvin\DCIMarvinContextReader.cs" />
     <Compile Include="Infrastructure\BabyIDEEditor.xaml.cs">
       <DependentUpon>BabyIDEEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\BabyIDEToolWindow.cs" />
+    <Compile Include="Presentation\Operation\ContextFileDisplayingContext.cs" />
+    <Compile Include="Presentation\Operation\ContextFileOpeningContext.cs" />
+    <Compile Include="Presentation\ViewModel\ContextInteractionViewModel.cs" />
+    <Compile Include="Presentation\View\BabyIDEToolWindow.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIContext.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIRole.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIRoleInterface.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIRoleMethod.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="Infrastructure\BabyIDEProjectionTextViewModelProvider.cs" />
+    <Compile Include="Presentation\ViewModel\ProjectionTextViewModelProvider.cs" />
+    <Compile Include="Infrastructure\Services\EditorService.cs" />
+    <Compile Include="Infrastructure\Services\ProjectSelectionService.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -177,7 +182,7 @@
     <Compile Include="Infrastructure\BabyIDEPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
-    <Compile Include="Infrastructure\BabyIDEVisualStudioServices.cs" />
+    <Compile Include="Infrastructure\Services\VisualStudioServices.cs" />
     <Compile Include="Usecases\Usecases.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -225,9 +230,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Presentation\Operation\" />
-    <Folder Include="Presentation\ViewModel\" />
-    <Folder Include="Presentation\View\" />
+    <Folder Include="Infrastructure\Operation\" />
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

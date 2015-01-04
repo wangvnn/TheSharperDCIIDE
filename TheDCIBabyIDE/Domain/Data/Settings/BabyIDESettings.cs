@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.Settings
 {
-    public class DCIBabyIDESettings
+    public class BabyIDESettings
     {
         public enum ContextFiletype
         {

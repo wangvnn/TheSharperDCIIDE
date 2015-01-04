@@ -11,17 +11,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using KimHaiQuang.TheDCIBabyIDE.Presentation.Operation;
 
 namespace KimHaiQuang.TheDCIBabyIDE
 {
     /// <summary>
     /// Interaction logic for MyControl.xaml
     /// </summary>
-    public partial class BabyIDEEditor : UserControl
+    public partial class BabyIDEEditor : 
+        UserControl, ContextFileDisplayingContext.IContextFileViewerRole
     {
         public BabyIDEEditor()
         {
             InitializeComponent();
         }
+
+        public ContentControl UsecaseView { get { return _UsecaseView; } }
+        public ContentControl ProjectedCodeView { get { return _ProjectedCodeView; } }
+        public FrameworkElement InteractionView { get { return _InteractionView; } }
     }
 }

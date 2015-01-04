@@ -4,15 +4,15 @@ using KimHaiQuang.TheDCIBabyIDE.Domain.Data.Settings;
 
 namespace TheDCIBabyIDE.Test.DomainTest.DataTest
 {
-    public class DCIContextTest : GivenWhenThenFixture
+    public class ParseDCIContextFileTest : GivenWhenThenFixture
     {
         public override void Specify()
         {
             given("A DCI Context file and IDE Settings set to Injectionless Context File Type", () => {
 
                 string contextFile = TestInfo.FrontLoadOperation;
-                var IDESettings = new DCIBabyIDESettings();
-                IDESettings.ContextFileTypeSettings = DCIBabyIDESettings.ContextFiletype.ContextFiletype_Injectionless;
+                var IDESettings = new BabyIDESettings();
+                IDESettings.ContextFileTypeSettings = BabyIDESettings.ContextFiletype.ContextFiletype_Injectionless;
 
                 when("parse dci context file", () => {
 

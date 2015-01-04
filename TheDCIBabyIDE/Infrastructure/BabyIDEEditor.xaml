@@ -20,23 +20,13 @@
         		<ColumnDefinition MaxWidth="5" Width="5*"/>
         		<ColumnDefinition/>
         	</Grid.ColumnDefinitions>
-        	<RichTextBox x:Name="Usecase">
-        		<FlowDocument/>
-        	</RichTextBox>
+        	<ContentControl x:Name="_UsecaseView" Margin="0"/>
         	<GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
-        	<StackPanel x:Name="Interaction" Grid.Row="0" Margin="0" Grid.Column="2"/>
+        	<StackPanel x:Name="_InteractionView" Grid.Row="0" Margin="0" Grid.Column="2"/>
         </Grid>
         <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>
         <Grid x:Name="CodePanel" Grid.Row="2" Grid.RowSpan="2">
-        	<Grid.ColumnDefinitions>
-        		<ColumnDefinition/>
-        		<ColumnDefinition MaxWidth="5" Width="5*"/>
-        		<ColumnDefinition/>
-        		<ColumnDefinition/>
-        	</Grid.ColumnDefinitions>
-        	<ContentControl x:Name="GeneratedCode" Grid.Column="0" Grid.Row="0" Margin="0"/>
-        	<GridSplitter x:Name="GeneratedProjectedCode" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
-        	<ContentControl x:Name="ProjectedCode" Margin="0" Grid.Column="2" Grid.ColumnSpan="2"/>
+        	<ContentControl x:Name="_ProjectedCodeView" Margin="0"/>
         </Grid>
     </Grid>
 </UserControl>

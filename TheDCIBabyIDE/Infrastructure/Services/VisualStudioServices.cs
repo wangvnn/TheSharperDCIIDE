@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.ComponentModelHost;
 
-namespace KimHaiQuang.TheDCIBabyIDE
+namespace KimHaiQuang.TheDCIBabyIDE.Services
 {
-    public static class BabyIDEVisualStudioServices
+    public static class VisualStudioServices
     {
         public static EnvDTE.DTE DTE
         {
@@ -25,5 +21,7 @@ namespace KimHaiQuang.TheDCIBabyIDE
             get;
             set;
         }
+
+        public static IComponentModel ComponentModel { get; set; }
     }
 }
