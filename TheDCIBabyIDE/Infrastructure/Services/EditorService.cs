@@ -47,6 +47,11 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
                 EditorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
                 TextEditorFactoryService = componentModel.GetService<ITextEditorFactoryService>();
             }
+
+            if (_Instance == null)
+            {
+                _Instance = new EditorService();
+            }
         }
 
         public static void Destroy()
@@ -80,7 +85,12 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
         {
         }
 
-        public void CreateProjectionEditor(string filePath, int start, int length, out IWpfTextViewHost host, out IVsTextView view)
+        public IVsTextView GetTextView(IWpfTextViewHost host)
+        {
+            return EditorService.EditorAdaptersFactoryService.GetViewAdapter(host.TextView);
+        }
+
+        public IWpfTextViewHost CreateProjectionEditor(string filePath, int start, int length)
         {
             IntPtr zero = IntPtr.Zero;
             Guid gUID = typeof(IVsTextLines).GUID;
@@ -90,6 +100,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 
             IVsCodeWindow window = EditorAdaptersFactoryService.CreateVsCodeWindowAdapter(OLEServiceProvider);
             ErrorHandler.ThrowOnFailure(window.SetBuffer(objectForIUnknown));
+
+            IVsTextView view;
             ErrorHandler.ThrowOnFailure(window.GetPrimaryView(out view));
 
             // NOTE: using MEF 
@@ -118,7 +130,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
             dataBuffer.Properties.AddProperty("StartPosition", start);
             dataBuffer.Properties.AddProperty("EndPosition", start + length);
 
-            host = EditorService.EditorAdaptersFactoryService.GetWpfTextViewHost(view);
+            return EditorService.EditorAdaptersFactoryService.GetWpfTextViewHost(view);
         }
 
         private IVsInvisibleEditor _CurrentInvisibleEditor = null;

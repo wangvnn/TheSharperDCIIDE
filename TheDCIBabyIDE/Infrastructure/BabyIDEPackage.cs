@@ -10,9 +10,7 @@ using System.IO;
 using KimHaiQuang.TheDCIBabyIDE.Services;
 using KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services;
 using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text.Editor;
-using KimHaiQuang.TheDCIBabyIDE.View;
+using KimHaiQuang.TheDCIBabyIDE.Presentation.View;
 
 namespace KimHaiQuang.TheDCIBabyIDE
 {

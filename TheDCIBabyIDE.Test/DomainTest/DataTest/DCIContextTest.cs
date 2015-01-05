@@ -16,7 +16,7 @@ namespace TheDCIBabyIDE.Test.DomainTest.DataTest
 
                 when("parse dci context file", () => {
 
-                    var dciContext = new ContextFileParsingContext(contextFile, IDESettings).Parse();
+                    var dciContext = new ContextFileParsingContext(IDESettings).Parse(contextFile);
 
                     then("the dciContext should have correct info: roles, usecase...", () => {
 

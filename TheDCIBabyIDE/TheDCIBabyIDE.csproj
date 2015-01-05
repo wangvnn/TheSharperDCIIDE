@@ -158,7 +158,11 @@
     <Compile Include="Domain\Operation\ContextFileParsingContext.cs" />
     <Compile Include="Domain\Reader\Injectionless\DCIInjectionlessContextReader.cs" />
     <Compile Include="Domain\Reader\Marvin\DCIMarvinContextReader.cs" />
-    <Compile Include="Infrastructure\BabyIDEEditor.xaml.cs">
+    <Compile Include="Presentation\ViewModel\CommandSink.cs" />
+    <Compile Include="Presentation\ViewModel\CommandSinkBinding.cs" />
+    <Compile Include="Presentation\ViewModel\DelegateCommand.cs" />
+    <Compile Include="Presentation\ViewModel\ObservableObject.cs" />
+    <Compile Include="Presentation\View\BabyIDEEditor.xaml.cs">
       <DependentUpon>BabyIDEEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Operation\ContextFileDisplayingContext.cs" />
@@ -218,7 +222,7 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Infrastructure\BabyIDEEditor.xaml">
+    <Page Include="Presentation\View\BabyIDEEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

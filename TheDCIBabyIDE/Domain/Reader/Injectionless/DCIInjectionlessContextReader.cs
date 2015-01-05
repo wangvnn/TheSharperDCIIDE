@@ -55,9 +55,11 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
             RoleReader = contextFileModel;
         }
 
-        public void Read(string filePath)
+        public DCIContext Read(string filePath)
         {
             RegionReader_Read(filePath);
+
+            return ContextFileModel;
         }
 
         #endregion

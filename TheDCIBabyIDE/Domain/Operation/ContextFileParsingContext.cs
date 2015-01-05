@@ -93,6 +93,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Operation
 
         public DCIContext Parse(string filePath)
         {
+            ContextFileModel.Filepath = filePath;
             DCIContextReader.Read(filePath);
 
             return ContextFileModel;

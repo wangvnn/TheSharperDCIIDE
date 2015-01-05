@@ -27,27 +27,25 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
         //
         // Steps:
         // 1) SYSTEM asks EDITOR to display CONTEXT MODEL
-        // 2) EDITOR asks PROJECTED VIEW FACTORY to create USECASE EDITOR
-        // 3) USECASE EDITOR asks VIEWMODEL PROVIDER to provide USECASE TEXT VIEW MODEL
-        // 4) EDITOR asks PROJECTED VIEW FACTORY to create PROJECTED CODE EDITOR (show CONTEXT CODE by default)
-        // 5) PROJECTED CODE EDITOR asks VIEWMODEL PROVIDER to provide PROJECTED TEXT VIEW MODEL
-        // 6) EDITOR creates INTERACTION VIEW MODEL to display CONTEXT's INTERACTION 
+        // 2) EDITOR asks PROJECTION VIEW FACTORY to create USECASE VIEW
+        // 3) EDITOR asks PROJECTION VIEW FACTORY to create PROJECTION CODE VIEW (show CONTEXT CODE by default)
+        // 4) EDITOR creates INTERACTION VIEW MODEL to display CONTEXT's INTERACTION 
         #endregion
 
         #region Roles
 
         public interface IContextFileViewerRole
         {
-            ContentControl UsecaseView { get; }
-            ContentControl ProjectedCodeView { get; }
-            FrameworkElement InteractionView { get; }
+            IWpfTextViewHost UsecaseView { set; }
+            IWpfTextViewHost ProjectionView { set; }
+            ViewModelBase InteractionViewModel { set; }
         }
         private IContextFileViewerRole ContextFileViewer { get; set; }
 
         private IEditorFactory EditorFactory { get; set; }
         public interface IEditorFactory
         {
-            void CreateProjectionEditor(string filePath, int start, int length, out IWpfTextViewHost host, out IVsTextView view);
+            IWpfTextViewHost CreateProjectionEditor(string filePath, int start, int length);
         }
         #endregion
 
@@ -61,25 +59,20 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
 
         public void Display(DCIContext contextModel)
         {
-            ProjectedViewFactory_CreateUsecaseEditor();
+            ProjectionViewFactory_Display(contextModel);
         }
 
         #endregion
 
         #region ProjectedViewFactory_Methods
 
-        void ProjectedViewFactory_CreateUsecaseEditor()
+        void ProjectionViewFactory_Display(DCIContext contextModel)
         {
-            var useCaseEditor = ProjectedViewFactory.CreateEditor();
-            ContextFileViewer.UsecaseView.Content = useCaseEditor.TextViewHost;
-
-            var codeEditor = ProjectedViewFactory.CreateEditor();
-            ContextFileViewer.ProjectedCodeView.Content = codeEditor.TextViewHost;
-
-            var interactionViewModel = new ContextInteractionViewModel();
-            ContextFileViewer.InteractionView.DataContext = interactionViewModel;
+            ContextFileViewer.UsecaseView = EditorFactory.CreateProjectionEditor(contextModel.Filepath, contextModel.UsecaseSpan.Start, contextModel.UsecaseSpan.Length);
+            ContextFileViewer.ProjectionView = EditorFactory.CreateProjectionEditor(contextModel.Filepath, contextModel.ContextSpan.Start, contextModel.ContextSpan.Length);
+            ContextFileViewer.InteractionViewModel = new ContextInteractionViewModel(contextModel);
         }
-        
+
         #endregion
     }
 }

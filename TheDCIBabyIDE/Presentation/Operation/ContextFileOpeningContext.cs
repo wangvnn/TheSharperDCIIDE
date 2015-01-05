@@ -66,8 +66,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
         public void Open()
         {
             SolutionExplorer_FindSelectedContextFile();
-
-
         }
 
         #endregion
