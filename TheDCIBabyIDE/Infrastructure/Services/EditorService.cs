@@ -14,6 +14,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Text.Projection;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.Operation;
+using System.Collections;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 {
@@ -165,99 +166,104 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
         [Export(typeof(ITextViewModelProvider)), ContentType("CSharp"), TextViewRole(DCI_BABY_IDE)]
         internal class DCIBabyIDETextViewModelProvider : ITextViewModelProvider
         {
+
             public ITextViewModel CreateTextViewModel(ITextDataModel dataModel, ITextViewRoleSet roles)
             {
-                //Create a projection buffer based on the specified start and end position.
-                var projectionBuffer = CreateProjectionBuffer(dataModel);
-                //Display this projection buffer in the visual buffer, while still maintaining
-                //the full file buffer as the underlying data buffer.
-                var textViewModel = new DCIBabyIDETextViewModel(dataModel, projectionBuffer);
-                return textViewModel;
+                int start = (int)dataModel.DataBuffer.Properties.GetProperty("StartPosition");
+                int end = (int)dataModel.DataBuffer.Properties.GetProperty("EndPosition");
+                Span block = new Span(start, end-start);
+                int leadingCharCount = this.CalculateLeadingWhitespace(dataModel.DataBuffer, block);
+                char leadingCharacter = this.GetLeadingCharacter(dataModel.DataBuffer, block);
+                return new DCIBabyIDETextViewModel(dataModel, this.CreateElisionBuffer(dataModel, start, end, leadingCharCount), leadingCharCount, leadingCharacter);
             }
 
-            private IProjectionBuffer CreateProjectionBuffer(ITextDataModel dataModel)
+            // Methods
+            private int CalculateLeadingWhitespace(ITextBuffer buffer, Span block)
             {
-                //retrieve start and end position that we saved in MyToolWindow.CreateEditor()
-                var startPosition = (int)dataModel.DataBuffer.Properties.GetProperty("StartPosition");
-                var endPosition = (int)dataModel.DataBuffer.Properties.GetProperty("EndPosition");
-                var length = endPosition - startPosition;
-
-                //Take a snapshot of the text within these indices.
-                var textSnapshot = dataModel.DataBuffer.CurrentSnapshot;
-                var trackingSpan = textSnapshot.CreateTrackingSpan(startPosition, length, SpanTrackingMode.EdgeExclusive);
-
-                //Create the actual projection buffer
-                var projectionBuffer = ProjectionBufferFactory.CreateProjectionBuffer(
-                    null
-                    , new List<object>() { trackingSpan }
-                    , ProjectionBufferOptions.None
-                    );
-                return projectionBuffer;
+                string text = (from n in buffer.CurrentSnapshot.Lines
+                               where block.OverlapsWith((Span)n.Extent)
+                               select n).First<ITextSnapshotLine>().GetText();
+                return this.CountLeadingWhiteSpace(text);
             }
 
+            private int CountLeadingWhiteSpace(string line)
+            {
+                int num = 0;
+                for (int i = 0; i < line.Length; i++)
+                {
+                    if ((line[i] != ' ') && (line[i] != '\t'))
+                    {
+                        return num;
+                    }
+                    num++;
+                }
+                return num;
+            }
 
+            public IElisionBuffer CreateElisionBuffer(ITextDataModel dataModel, int startPosition, int endPosition, int leadingCharCount)
+            {
+                int length = endPosition - startPosition;
+                Span span = new Span(startPosition, length);
+                SnapshotSpan span2 = new SnapshotSpan(dataModel.DataBuffer.CurrentSnapshot, span);
+                return this._projectionBufferFactory.CreateElisionBuffer(null, new NormalizedSnapshotSpanCollection(span2), ElisionBufferOptions.None);
+            }
+            private char GetLeadingCharacter(ITextBuffer buffer, Span block)
+            {
+                string text = (from n in buffer.CurrentSnapshot.Lines
+                               where block.OverlapsWith((Span)n.Extent)
+                               select n).First<ITextSnapshotLine>().GetText();
+                if (text.Length != 0)
+                {
+                    return text[0];
+                }
+                return ' ';
+            }
+
+            // Properties
             [Import]
-            public IProjectionBufferFactoryService ProjectionBufferFactory { get; set; }
+            private IProjectionBufferFactoryService _projectionBufferFactory { get; set; }
         }
 
-        internal class DCIBabyIDETextViewModel : ITextViewModel
+        internal class DCIBabyIDETextViewModel : ITextViewModel, IPropertyOwner, IDisposable
         {
+            // Fields
+            private List<string> _CSharpKeyWords;
             private readonly ITextDataModel _dataModel;
-            private readonly IProjectionBuffer _projectionBuffer;
+            private readonly IElisionBuffer _elisionBuffer;
+            private char _leadingCharacter;
+            private int _leadingCharCount;
             private readonly PropertyCollection _properties;
 
-            public DCIBabyIDETextViewModel(ITextDataModel dataModel, IProjectionBuffer projectionBuffer)
+            // Methods
+            public DCIBabyIDETextViewModel(ITextDataModel dataModel, IElisionBuffer elisionBuffer, int leadingCharCount, char leadingCharacter)
             {
                 this._dataModel = dataModel;
-                this._projectionBuffer = projectionBuffer;
+                this._elisionBuffer = elisionBuffer;
+                this._leadingCharCount = leadingCharCount;
+                this._leadingCharacter = leadingCharacter;
                 this._properties = new PropertyCollection();
-            }
 
-            //The underlying source buffer from which the projection was created
-            public ITextBuffer DataBuffer
-            {
-                get
-                {
-                    return _dataModel.DataBuffer;
-                }
+                this.ElideIndentation();
             }
-
-            public ITextDataModel DataModel
+            
+            public void ElideIndentation()
             {
-                get
+                var spans = new List<Span>();
+                foreach (Tuple<ITextSnapshotLine, ITextSnapshotLine> lineInfo in this._elisionBuffer.CurrentSnapshot.GetSnapshotLinesAndSourceLines(this.DataBuffer))
                 {
-                    return _dataModel;
+                    ITextSnapshotLine snapshotLine = lineInfo.Item1;
+                    ITextSnapshotLine bufferLine = lineInfo.Item2;
+                    if ( ( (snapshotLine.Length > 0) && (snapshotLine.Length > this._leadingCharCount) ) &&
+                         ( (snapshotLine.GetText().Substring(0, this._leadingCharCount).Trim().Length == 0) &&  ( ( snapshotLine.Length - this._leadingCharCount) != bufferLine.Length) ) )
+                    {
+                        spans.Add(new Span(bufferLine.Start.Position, this._leadingCharCount));
+                    }
                 }
-            }
-
-            public ITextBuffer EditBuffer
-            {
-                get
-                {
-                    return _projectionBuffer;
-                }
-            }
-
-            // Displays our projection 
-            public ITextBuffer VisualBuffer
-            {
-                get
-                {
-                    return _projectionBuffer;
-                }
-            }
-
-            public PropertyCollection Properties
-            {
-                get
-                {
-                    return _properties;
-                }
+                this._elisionBuffer.ElideSpans(new NormalizedSpanCollection(spans));
             }
 
             public void Dispose()
             {
-
             }
 
             public SnapshotPoint GetNearestPointInVisualBuffer(SnapshotPoint editBufferPoint)
@@ -270,12 +276,66 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
                 return editBufferPoint.TranslateTo(targetVisualSnapshot, trackingMode);
             }
 
+
             public bool IsPointInVisualBuffer(SnapshotPoint editBufferPoint, PositionAffinity affinity)
             {
                 return true;
             }
-        }
 
+
+            // Properties
+            public ITextBuffer DataBuffer
+            {
+                get
+                {
+                    return this._dataModel.DataBuffer;
+                }
+            }
+
+            public ITextDataModel DataModel
+            {
+                get
+                {
+                    return this._dataModel;
+                }
+            }
+
+            public ITextBuffer EditBuffer
+            {
+                get
+                {
+                    return this._elisionBuffer;
+                }
+            }
+
+            public PropertyCollection Properties
+            {
+                get
+                {
+                    return this._properties;
+                }
+            }
+
+            public ITextBuffer VisualBuffer
+            {
+                get
+                {
+                    return this._elisionBuffer;
+                }
+            }
+        }
         #endregion
     }
+
+    public static class IElisionSnapshotExtensions
+    {
+        // Methods
+        public static IEnumerable<Tuple<ITextSnapshotLine, ITextSnapshotLine>> GetSnapshotLinesAndSourceLines(this IElisionSnapshot snapshot, ITextBuffer source)
+        {
+            return (from editLine in snapshot.Lines
+                    let position = snapshot.MapToSourceSnapshot(editLine.Start.Position)
+                    select new { editLine, dataLine = source.CurrentSnapshot.GetLineFromPosition(position) }).Select(x => Tuple.Create<ITextSnapshotLine, ITextSnapshotLine>(x.editLine, x.dataLine)).ToList<Tuple<ITextSnapshotLine, ITextSnapshotLine>>();
+        }
+    }
+
 }

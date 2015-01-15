@@ -6,7 +6,7 @@
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             x:Name="TheBabyIDE" Height="768" Width="1024">
+             x:Name="TheBabyIDE" Height="Auto" Width="Auto">
     <Grid x:Name="BabyIDEPanel">
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -22,7 +22,9 @@
         	</Grid.ColumnDefinitions>
         	<ContentControl x:Name="UsecaseView" Margin="0"/>
         	<GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
-        	<StackPanel x:Name="_InteractionView" Grid.Row="0" Margin="0" Grid.Column="2"/>
+            <StackPanel x:Name="_InteractionView" Grid.Row="0" Margin="0" Grid.Column="2">
+                <TextBlock x:Name="DebugLog"/>
+            </StackPanel>
         </Grid>
         <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>
         <Grid x:Name="CodePanel" Grid.Row="2" Grid.RowSpan="2">

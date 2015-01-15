@@ -96,7 +96,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
         int IOleCommandTarget.Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt,
           IntPtr pvaIn, IntPtr pvaOut)
         {
-            return WhenIOleCommandTargetExec(ref pguidCmdGroup, nCmdexecopt, nCmdexecopt, pvaIn, pvaOut);
+            return WhenIOleCommandTargetExec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
         }
 
         /// <summary>
@@ -155,8 +155,11 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 if (_UsecaseView == null)
                 {
                     _UsecaseView = value;
-                    (_UsecaseView as UIElement).LostKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
-                    (_UsecaseView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
+                    if (_UsecaseView != null)
+                    {
+                        (_UsecaseView as UIElement).LostKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
+                        (_UsecaseView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
+                    }
                     _BabyIDEEditor.UsecaseView.Content = _UsecaseView;
                 }
             }
@@ -166,13 +169,14 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
         {
             set
             {
-                if (_ProjectionView == null)
+                _ProjectionView = value;
+
+                if (_ProjectionView != null)
                 {
-                    _ProjectionView = value;
                     (_ProjectionView as UIElement).LostKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
                     (_ProjectionView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
-                    _BabyIDEEditor.ProjectionCodeView.Content = _ProjectionView;
                 }
+                _BabyIDEEditor.ProjectionCodeView.Content = _ProjectionView;
             }
         }
 
@@ -187,7 +191,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             _FocusedTextViewHost = null;
             e.Handled = true;
         }
-
 
         private BabyIDEEditor _BabyIDEEditor;
         private object WhenShowContent()

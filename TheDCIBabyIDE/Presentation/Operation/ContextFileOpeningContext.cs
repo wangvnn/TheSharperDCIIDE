@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,7 +77,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
         {
             string filePath = SolutionExplorer.GetSelectedItemFullPath();
 
-            Parser_ParseContextFile(filePath);
+            if (File.Exists(filePath))
+            {
+                Parser_ParseContextFile(filePath);
+            }
         }
 
         #endregion

@@ -68,6 +68,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
         private void RegionReader_Read(string filePath)
         {
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
             using (var file = File.OpenText(filePath))
             {
                 var tree = CSharpSyntaxTree.ParseText(file.ReadToEnd());
