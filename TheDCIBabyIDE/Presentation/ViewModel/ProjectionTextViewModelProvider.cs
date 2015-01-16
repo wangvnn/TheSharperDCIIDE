@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Projection;
 using Microsoft.VisualStudio.Utilities;
  
-namespace CKimHaiQuang.TheDCIBabyIDE.ViewModel
+namespace KimHaiQuang.TheDCIBabyIDE.ViewModel
 {
     /// <summary>
     /// Whenever CSharp WpfTextViews are created with the CustomProjectionRole role

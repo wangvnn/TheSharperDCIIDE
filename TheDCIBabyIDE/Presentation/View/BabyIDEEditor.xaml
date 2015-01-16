@@ -3,10 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:view="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.View"
+             xmlns:viewmodel="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel"             
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              x:Name="TheBabyIDE" Height="Auto" Width="Auto">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type viewmodel:RoleViewModel}">
+                <view:RoleView/>
+             </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid x:Name="BabyIDEPanel">
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -23,7 +32,26 @@
         	<ContentControl x:Name="UsecaseView" Margin="0"/>
         	<GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
             <StackPanel x:Name="_InteractionView" Grid.Row="0" Margin="0" Grid.Column="2">
-                <TextBlock x:Name="DebugLog"/>
+                <ScrollViewer>
+                    <Border>
+                        <ItemsControl ItemsSource="Binding Roles">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style>
+                                  <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}"/>
+                                  <Setter Property="Canvas.Left" Value="{Binding CanvasLeft}"/>
+                                  <Setter Property="Canvas.Top" Value="{Binding CanvasRight}"/>
+
+   
+                                </Style>
+                              </ItemsControl.ItemContainerStyle>                        
+                        </ItemsControl>
+                    </Border>
+                </ScrollViewer>
             </StackPanel>
         </Grid>
         <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>

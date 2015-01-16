@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Windows.Input;
 
-namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
+namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base
 {
     #region ICommandSink
 
@@ -53,7 +54,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
     /// It provides a means of registering commands and their callback 
     /// methods, and will invoke those callbacks upon request.
     /// </summary>
-    public class CommandSink : ICommandSink
+    public class CommandSink : DynamicObject, ICommandSink
     {
         #region Data
 

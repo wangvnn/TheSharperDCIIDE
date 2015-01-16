@@ -158,16 +158,20 @@
     <Compile Include="Domain\Operation\ContextFileParsingContext.cs" />
     <Compile Include="Domain\Reader\Injectionless\DCIInjectionlessContextReader.cs" />
     <Compile Include="Domain\Reader\Marvin\DCIMarvinContextReader.cs" />
-    <Compile Include="Presentation\ViewModel\CommandSink.cs" />
-    <Compile Include="Presentation\ViewModel\CommandSinkBinding.cs" />
-    <Compile Include="Presentation\ViewModel\DelegateCommand.cs" />
-    <Compile Include="Presentation\ViewModel\ObservableObject.cs" />
+    <Compile Include="Presentation\ViewModel\Base\CommandSink.cs" />
+    <Compile Include="Presentation\ViewModel\Base\CommandSinkBinding.cs" />
+    <Compile Include="Presentation\ViewModel\Base\DelegateCommand.cs" />
+    <Compile Include="Presentation\ViewModel\Base\ViewModelBase.cs" />
+    <Compile Include="Presentation\ViewModel\InterfaceViewModel.cs" />
+    <Compile Include="Presentation\ViewModel\MethodViewModel.cs" />
+    <Compile Include="Presentation\ViewModel\RoleViewModel.cs" />
+    <Compile Include="Presentation\ViewModel\SignatureViewModel.cs" />
     <Compile Include="Presentation\View\BabyIDEEditor.xaml.cs">
       <DependentUpon>BabyIDEEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Operation\ContextFileDisplayingContext.cs" />
     <Compile Include="Presentation\Operation\ContextFileOpeningContext.cs" />
-    <Compile Include="Presentation\ViewModel\ContextInteractionViewModel.cs" />
+    <Compile Include="Presentation\ViewModel\ContextViewModel.cs" />
     <Compile Include="Presentation\View\BabyIDEToolWindow.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIContext.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIRole.cs" />
@@ -177,6 +181,9 @@
     <Compile Include="Presentation\ViewModel\ProjectionTextViewModelProvider.cs" />
     <Compile Include="Infrastructure\Services\EditorService.cs" />
     <Compile Include="Infrastructure\Services\ProjectSelectionService.cs" />
+    <Compile Include="Presentation\View\RoleView.xaml.cs">
+      <DependentUpon>RoleView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -223,6 +230,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Presentation\View\BabyIDEEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\View\RoleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

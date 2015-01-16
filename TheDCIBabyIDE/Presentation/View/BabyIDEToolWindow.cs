@@ -12,6 +12,8 @@ using KimHaiQuang.TheDCIBabyIDE.Presentation.Operation;
 using System.Windows;
 using System.Windows.Input;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel;
+using KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo;
+using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
 {
@@ -138,8 +140,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             IDESettings.ContextFileTypeSettings = BabyIDESettings.ContextFiletype.ContextFiletype_Injectionless;
         }
 
-        private ViewModelBase _InteractionViewModel = null;
-        public ViewModelBase InteractionViewModel
+        private ContextViewModel _InteractionViewModel = null;
+        public ContextViewModel InteractionViewModel
         {
             set
             {
@@ -164,6 +166,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 }
             }
         }
+
         private IWpfTextViewHost _ProjectionView = null;
         public IWpfTextViewHost ProjectionView
         {

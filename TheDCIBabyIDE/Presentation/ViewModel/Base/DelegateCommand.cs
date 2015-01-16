@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
+namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base
 {
     public class DelegateCommand : ICommand
     {

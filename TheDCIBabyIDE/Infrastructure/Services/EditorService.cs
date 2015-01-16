@@ -226,8 +226,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 
         internal class DCIBabyIDETextViewModel : ITextViewModel, IPropertyOwner, IDisposable
         {
-            // Fields
-            private List<string> _CSharpKeyWords;
             private readonly ITextDataModel _dataModel;
             private readonly IElisionBuffer _elisionBuffer;
             private char _leadingCharacter;
@@ -329,7 +327,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 
     public static class IElisionSnapshotExtensions
     {
-        // Methods
         public static IEnumerable<Tuple<ITextSnapshotLine, ITextSnapshotLine>> GetSnapshotLinesAndSourceLines(this IElisionSnapshot snapshot, ITextBuffer source)
         {
             return (from editLine in snapshot.Lines

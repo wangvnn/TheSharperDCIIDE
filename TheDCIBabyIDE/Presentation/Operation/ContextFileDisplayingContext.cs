@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo;
-using Microsoft.Internal.VisualStudio.PlatformUI;
-using KimHaiQuang.TheDCIBabyIDE.Presentation.View;
+﻿using KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel;
-using CKimHaiQuang.TheDCIBabyIDE.ViewModel;
-using System.Windows;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
 {
@@ -38,7 +27,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
         {
             IWpfTextViewHost UsecaseView { set; }
             IWpfTextViewHost ProjectionView { set; }
-            ViewModelBase InteractionViewModel { set; }
+            ContextViewModel InteractionViewModel { set; }
         }
         private IContextFileViewerRole ContextFileViewer { get; set; }
 
@@ -70,7 +59,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
         {
             ContextFileViewer.UsecaseView = EditorFactory.CreateProjectionEditor(contextModel.Filepath, contextModel.UsecaseSpan.Start, contextModel.UsecaseSpan.Length);
             ContextFileViewer.ProjectionView = EditorFactory.CreateProjectionEditor(contextModel.Filepath, contextModel.ContextSpan.Start, contextModel.ContextSpan.Length);
-            ContextFileViewer.InteractionViewModel = new ContextInteractionViewModel(contextModel);
+            ContextFileViewer.InteractionViewModel = new ContextViewModel(contextModel);
         }
 
         #endregion

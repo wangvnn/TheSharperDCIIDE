@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProkonDCI.Domain.Operation
 {
-    public sealed class FrontLoadContext 
+    public sealed class FrontLoadContext
     {
         #region Usecase
 
@@ -84,7 +84,7 @@ namespace ProkonDCI.Domain.Operation
 
         private bool FrontLoader_FindUnPlannedActivity()
         {
-            UnPlannedActivity = (UnPlannedActivityRole) AllActivities.FirstOrDefault(a => a.EarlyStart == 0 &&
+            UnPlannedActivity = (UnPlannedActivityRole)AllActivities.FirstOrDefault(a => a.EarlyStart == 0 &&
                 !Model.PredecessorsOf(a).Any(p => p.EarlyFinish == 0));
 
             return UnPlannedActivity != null;

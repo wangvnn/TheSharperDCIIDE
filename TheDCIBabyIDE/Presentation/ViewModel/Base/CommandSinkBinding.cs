@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
+namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base
 {
     /// <summary>
     /// A CommandBinding subclass that will attach its
