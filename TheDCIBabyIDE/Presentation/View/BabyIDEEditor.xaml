@@ -5,11 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:view="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.View"
              xmlns:viewmodel="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel"          
-             xmlns:jas="clr-namespace:WPF.JoshSmith.Controls"               
-             Background="{DynamicResource VsBrush.Window}"
-             Foreground="{DynamicResource VsBrush.WindowText}"
+             xmlns:jas="clr-namespace:WPF.JoshSmith.Controls"         
+             xmlns:viewModelBase="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base"
              mc:Ignorable="d"
              x:Name="TheBabyIDE" Height="Auto" Width="Auto">
+    <UserControl.CommandBindings>
+        <viewModelBase:CommandSinkBinding Command="viewmodel:RoleViewModelRoutedCommands.SelectCommand" />
+    </UserControl.CommandBindings>
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type viewmodel:RoleViewModel}">
@@ -41,20 +43,26 @@
                     HorizontalAlignment="Stretch"
                     Width="1600" Height="1200">
                     <Border>
-                        <ItemsControl ItemsSource="{Binding Roles}">
-                            <ItemsControl.ItemsPanel>
+                        <ListBox 
+                            ItemsSource="{Binding Roles}"
+                            SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}">
+                            <ListBox.Resources>
+                                <!-- Set SelectedItem Background here -->
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Blue"/>
+                            </ListBox.Resources>
+                            <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <jas:DragCanvas/>
                                 </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemContainerStyle>
                                 <Style>
                                     <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}"/>
                                     <Setter Property="Canvas.Left" Value="{Binding CanvasLeft}"/>
                                     <Setter Property="Canvas.Top" Value="{Binding CanvasTop}"/>   
                                 </Style>
-                              </ItemsControl.ItemContainerStyle>                        
-                        </ItemsControl>
+                              </ListBox.ItemContainerStyle>                        
+                        </ListBox>
                     </Border>
                 </ScrollViewer>
             </Grid>

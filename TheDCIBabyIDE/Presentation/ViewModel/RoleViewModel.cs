@@ -6,9 +6,16 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 {
+    public class RoleViewModelRoutedCommands
+    {
+        public static readonly RoutedUICommand SelectCommand =
+            new RoutedUICommand("To select a Role", "Add SelectCommand", typeof(RoleViewModelRoutedCommands));
+    }
+
     public class RoleViewModel : ViewModelBase<DCIRole>
     {
         public int _ZIndex = 0;
