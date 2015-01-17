@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:view="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.View"
-             xmlns:viewmodel="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel"             
+             xmlns:viewmodel="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel"          
+             xmlns:jas="clr-namespace:WPF.JoshSmith.Controls"               
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -43,7 +44,7 @@
                         <ItemsControl ItemsSource="{Binding Roles}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <Canvas />
+                                    <jas:DragCanvas/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemContainerStyle>

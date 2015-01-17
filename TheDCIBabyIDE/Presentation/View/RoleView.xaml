@@ -6,9 +6,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     
-    <Border BorderThickness="1" Background="Green" BorderBrush="Black" Padding="15" CornerRadius="5">
+    <Border BorderThickness="1" Background="Black" BorderBrush="Black" Padding="15" CornerRadius="5">
         <StackPanel>
-            <TextBlock Text="{Binding Name}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Foreground="White" Text="{Binding Name}" HorizontalAlignment="Center"/>
+            </StackPanel>            
+            <Border BorderThickness="1" Background="White" BorderBrush="White"/>
             <ItemsControl ItemsSource="{Binding Methods}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -17,11 +20,15 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Name}"/>
+                        <Border Background="Gray">
+                            <TextBlock Foreground="White" Text="{Binding Name}"/>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock Text="{Binding Interface.Name}"/>
+            <Border BorderThickness="1" Background="White" BorderBrush="White"/>
+            <TextBlock Foreground="White" Text="{Binding Interface.Name}"/>
+            <Border BorderThickness="1" Background="White" BorderBrush="White"/>
             <ItemsControl ItemsSource="{Binding Interface.Signatures}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -30,7 +37,9 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Name}"/>
+                        <Border Background="Gray">
+                            <TextBlock Foreground="White" Text="{Binding Name}"/>
+                        </Border>                        
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>            

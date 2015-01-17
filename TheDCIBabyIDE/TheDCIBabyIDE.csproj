@@ -181,9 +181,14 @@
     <Compile Include="Presentation\ViewModel\ProjectionTextViewModelProvider.cs" />
     <Compile Include="Infrastructure\Services\EditorService.cs" />
     <Compile Include="Infrastructure\Services\ProjectSelectionService.cs" />
+    <Compile Include="Presentation\View\Controls\ArrowEnds.cs" />
+    <Compile Include="Presentation\View\Controls\ArrowLine.cs" />
+    <Compile Include="Presentation\View\Controls\ArrowLineBase.cs" />
+    <Compile Include="Presentation\View\Controls\DragCanvas.cs" />
     <Compile Include="Presentation\View\RoleView.xaml.cs">
       <DependentUpon>RoleView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\View\UIBehaviours\TrackMouseBehaviour.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
