@@ -6,6 +6,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 {
     public class ContextViewModel : ViewModelBase<DCIContext>
     {
+        public ContextViewModel()
+        {
+        }
+
         public ContextViewModel(DCIContext model)
             : base(model)
         {
@@ -39,9 +43,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
                 roleViewModel.ZIndex = zindex;
                 roleViewModel.CanvasLeft = zindex * 100.0;
                 roleViewModel.CanvasTop = zindex * 100.0;
-
             }
         }
-
     }
 }

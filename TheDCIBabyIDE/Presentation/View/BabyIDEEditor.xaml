@@ -31,10 +31,16 @@
         	</Grid.ColumnDefinitions>
         	<ContentControl x:Name="UsecaseView" Margin="0"/>
         	<GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
-            <StackPanel x:Name="_InteractionView" Grid.Row="0" Margin="0" Grid.Column="2">
-                <ScrollViewer>
+            <Grid x:Name="_InteractionView" Grid.Row="0" Margin="0" Grid.Column="2">
+                <ScrollViewer 
+                    CanContentScroll="True"
+                    VerticalScrollBarVisibility="Hidden"
+                    HorizontalScrollBarVisibility="Hidden"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Width="1600" Height="1200">
                     <Border>
-                        <ItemsControl ItemsSource="Binding Roles">
+                        <ItemsControl ItemsSource="{Binding Roles}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <Canvas />
@@ -42,17 +48,15 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemContainerStyle>
                                 <Style>
-                                  <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}"/>
-                                  <Setter Property="Canvas.Left" Value="{Binding CanvasLeft}"/>
-                                  <Setter Property="Canvas.Top" Value="{Binding CanvasRight}"/>
-
-   
+                                    <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}"/>
+                                    <Setter Property="Canvas.Left" Value="{Binding CanvasLeft}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding CanvasTop}"/>   
                                 </Style>
                               </ItemsControl.ItemContainerStyle>                        
                         </ItemsControl>
                     </Border>
                 </ScrollViewer>
-            </StackPanel>
+            </Grid>
         </Grid>
         <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>
         <Grid x:Name="CodePanel" Grid.Row="2" Grid.RowSpan="2">

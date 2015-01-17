@@ -15,6 +15,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public ViewModelBase()
+        { }
+
+
         public ViewModelBase(T model)
         {
             Model = model;

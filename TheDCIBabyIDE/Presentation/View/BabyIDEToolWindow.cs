@@ -146,6 +146,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             set
             {
                 _InteractionViewModel = value;
+                _BabyIDEEditor._InteractionView.DataContext = _InteractionViewModel;
             }
         }
 

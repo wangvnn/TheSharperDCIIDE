@@ -11,10 +11,47 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 {
     public class RoleViewModel : ViewModelBase<DCIRole>
     {
-        public int ZIndex { get; set; }
-        public double CanvasLeft { get; set; }
-        public double CanvasTop { get; set; }
+        public int _ZIndex = 0;
+        public int ZIndex
+        {
+            get
+            {
+                return _ZIndex;
+            }
+            set
+            {
+                _ZIndex = value;
+                RaisePropertyChangedEvent("ZIndex");
+            }
+        }
 
+        public double _CanvasTop = 0;
+        public double CanvasTop
+        {
+            get
+            {
+                return _CanvasTop;
+            }
+            set
+            {
+                _CanvasTop = value;
+                RaisePropertyChangedEvent("CanvasTop");
+            }
+        }
+
+        public double _CanvasLeft = 0;
+        public double CanvasLeft
+        {
+            get
+            {
+                return _CanvasLeft;
+            }
+            set
+            {
+                _CanvasLeft = value;
+                RaisePropertyChangedEvent("CanvasLeft");
+            }
+        }
 
         private ObservableCollection<MethodViewModel> _Methods = new ObservableCollection<MethodViewModel>();
 

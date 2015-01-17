@@ -9,7 +9,7 @@
     <Border BorderThickness="1" Background="Green" BorderBrush="Black" Padding="15" CornerRadius="5">
         <StackPanel>
             <TextBlock Text="{Binding Name}"/>
-            <!--<ItemsControl ItemsSource="Binding Methods">
+            <ItemsControl ItemsSource="{Binding Methods}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel />
@@ -22,7 +22,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <TextBlock Text="{Binding Interface.Name}"/>
-            <ItemsControl ItemsSource="Binding Interface.Signatures">
+            <ItemsControl ItemsSource="{Binding Interface.Signatures}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel />
@@ -33,7 +33,7 @@
                         <TextBlock Text="{Binding Name}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>-->            
+            </ItemsControl>            
         </StackPanel>
     </Border>
 </UserControl>
