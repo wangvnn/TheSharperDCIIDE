@@ -18,8 +18,7 @@ using System.Collections;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 {
-    public class EditorService :
-        ContextFileDisplayingContext.IEditorFactory
+    public class EditorService
     {
         #region CONST
         private  const string DCI_BABY_IDE = "DCI_BABY_IDE";
@@ -133,18 +132,26 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 
             return EditorService.EditorAdaptersFactoryService.GetWpfTextViewHost(view);
         }
+        private uint _docCookie = 0;
+        public void CloseEditor()
+        {
+            Cleanup();
+        }
 
         private IVsInvisibleEditor _CurrentInvisibleEditor = null;
         private IVsInvisibleEditor GetInvisibleEditor(string filePath)
         {
             if (_CurrentInvisibleEditor == null)
             {
-                IVsHierarchy hierarchy;
-                uint num;
-                IntPtr ptr;
-                uint num2;
+                IVsHierarchy hierarchy; 
+                uint itemID;
+                IntPtr docData;
+
                 IVsInvisibleEditor editor;
-                RunningDocumentTable.FindAndLockDocument(1, filePath, out hierarchy, out num, out ptr, out num2);
+
+                RunningDocumentTable.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_ReadLock, filePath, 
+                    out hierarchy, out itemID, out docData, out _docCookie);
+
                 ErrorHandler.ThrowOnFailure(InvisibleEditorManager.RegisterInvisibleEditor(filePath, null, 1, null, out editor));
                 _CurrentInvisibleEditor = editor;
             }
@@ -153,6 +160,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 
         private void Cleanup()
         {
+            if (_docCookie != 0)
+                RunningDocumentTable.UnlockDocument((uint)_VSRDTFLAGS.RDT_ReadLock, _docCookie);
+
+            _docCookie = 0;
             _CurrentInvisibleEditor = null;
         }
 
@@ -243,8 +254,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 
                 this.ElideIndentation();
             }
-            
-            public void ElideIndentation()
+
+            private void ElideIndentation()
             {
                 var spans = new List<Span>();
                 foreach (Tuple<ITextSnapshotLine, ITextSnapshotLine> lineInfo in this._elisionBuffer.CurrentSnapshot.GetSnapshotLinesAndSourceLines(this.DataBuffer))

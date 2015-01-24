@@ -27,9 +27,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 
         private void SelectRole(RoleViewModel role)
         {
+            
         }
-
-
 
         private ObservableCollection<RoleViewModel> _Roles = new ObservableCollection<RoleViewModel>();
 
@@ -72,28 +71,31 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
             set
             {
                 _SelectedItem = value;
-
-                RoleViewModel maxZIndex = null;
-                foreach (var rvm in Roles)
-                {
-                    if (maxZIndex == null || rvm.ZIndex > maxZIndex.ZIndex)
-                    {
-                        maxZIndex = rvm;
-                    }
-                }
-
-                int zindex = -1;
-
-                zindex = _SelectedItem != null ? _SelectedItem.ZIndex : zindex;
-
-                if (_SelectedItem != null && maxZIndex != null)
-                    _SelectedItem.ZIndex = maxZIndex.ZIndex;
-
-                if (maxZIndex != null && zindex != -1)
-                    maxZIndex.ZIndex = zindex;
-
+                EnsureSelectedItemOnTop();
                 RaisePropertyChangedEvent("SelectedItem");
             }
+        }
+
+        private void EnsureSelectedItemOnTop()
+        {
+            RoleViewModel maxZIndex = null;
+            foreach (var rvm in Roles)
+            {
+                if (maxZIndex == null || rvm.ZIndex > maxZIndex.ZIndex)
+                {
+                    maxZIndex = rvm;
+                }
+            }
+
+            int zindex = -1;
+
+            zindex = _SelectedItem != null ? _SelectedItem.ZIndex : zindex;
+
+            if (_SelectedItem != null && maxZIndex != null)
+                _SelectedItem.ZIndex = maxZIndex.ZIndex;
+
+            if (maxZIndex != null && zindex != -1)
+                maxZIndex.ZIndex = zindex;
         }
     }
 }

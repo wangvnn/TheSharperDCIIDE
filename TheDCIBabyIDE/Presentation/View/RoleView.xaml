@@ -27,7 +27,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <Border BorderThickness="1" Background="White" BorderBrush="White"/>
-            <TextBlock Foreground="White" Text="{Binding Interface.Name}"/>
+            <TextBlock Foreground="White" Text="{Binding Interface.Name}" HorizontalAlignment="Center"/>
             <Border BorderThickness="1" Background="White" BorderBrush="White"/>
             <ItemsControl ItemsSource="{Binding Interface.Signatures}">
                 <ItemsControl.ItemsPanel>

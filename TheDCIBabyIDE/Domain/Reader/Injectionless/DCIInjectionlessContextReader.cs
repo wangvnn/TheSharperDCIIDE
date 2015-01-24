@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using System.IO;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.Text;
+using KimHaiQuang.TheDCIBabyIDE.Domain.Data.Code;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 {
@@ -164,6 +165,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
                         var newRole = new DCIRole();
                         newRole.Name = roleNode.Identifier.ToString();
+                        newRole.RoleSpan = new Span(roleNode.Span.Start, roleNode.Span.Length);
                         ContextFileModel.AddRole(newRole);
 
                         RoleReader_ReadInterface(newRole, roleRegion, roleNodeTypeName, parentNode);

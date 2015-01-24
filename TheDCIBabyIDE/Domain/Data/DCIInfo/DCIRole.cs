@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.Text;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 {
@@ -8,6 +9,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
         public DCIRoleInterface Interface { get; set; }
         private Dictionary<string, DCIRoleMethod> _Methods = new Dictionary<string, DCIRoleMethod>();
         public Dictionary<string, DCIRoleMethod> Methods { get { return _Methods; } }
+        public Span RoleSpan { get; set; }
 
         public DCIRole()
         {

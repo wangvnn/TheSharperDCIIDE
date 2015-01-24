@@ -26,8 +26,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
         // Steps:
         // 1) User selects CONTEXT FILE to open it in EDITOR
         // 2) SOLUTION EXPLORER finds SELECTED CONTEXT FILE
-        // 2) CONTEXT FILE PARSER parses CONTEXT FILE to get CONTEXT MODEL (Sub: Parse CONTEXT FILE)
-        // 3) CONTEXT FILE EDITOR displays CONTEXT MODEL in the VIEWER  (Sub: Display CONTEXT MODEL)
+        // 3) CONTEXT FILE PARSER parses CONTEXT FILE to get CONTEXT MODEL (Sub: Parse CONTEXT FILE)
+        // 4) CONTEXT FILE EDITOR displays CONTEXT MODEL 
         #endregion
 
         #region Roles
@@ -55,13 +55,12 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.Operation
 
         public ContextFileOpeningContext(ISolutionExplorerRole explorer,
             BabyIDESettings settings,
-            ContextFileDisplayingContext.IEditorFactory factory,
-            ContextFileDisplayingContext.IContextFileViewerRole viewer)
+            IContextFileEditorRole editor)
         {
             SolutionExplorer = explorer;
 
             Parser = new ContextFileParsingContext(settings);
-            Editor = new ContextFileDisplayingContext(factory, viewer);
+            Editor = editor;
         }
 
         public void Open()

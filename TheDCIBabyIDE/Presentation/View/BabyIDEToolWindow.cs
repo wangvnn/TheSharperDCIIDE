@@ -14,6 +14,8 @@ using System.Windows.Input;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel;
 using KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base;
+using System.ComponentModel;
+using Microsoft.VisualStudio.Text;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
 {
@@ -32,10 +34,48 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
     /// 
     /// </summary>
     [Guid("7df8029b-658a-4eb8-81ce-fa45d0dd1def")]
-    public class BabyIDEToolWindow : ToolWindowPane, IOleCommandTarget,
-        ContextFileDisplayingContext.IContextFileViewerRole
+    public class BabyIDEToolWindow : ToolWindowPane, IOleCommandTarget, IVsWindowFrameNotify3,
+        ContextFileOpeningContext.IContextFileEditorRole
     {
+        #region Public funtions
+
+        public void Display(DCIContext contextModel)
+        {
+            ContextModel = contextModel;
+        }
+
+        #endregion
+
         #region Infrastructure
+        public int OnClose(ref uint pgrfSaveOptions)
+        {
+            WhenCloseWindow();
+            return Microsoft.VisualStudio.VSConstants.S_OK;
+        }
+
+        public int OnDockableChange(int fDockable, int x, int y, int w, int h)
+        {
+            return Microsoft.VisualStudio.VSConstants.S_OK;
+        }
+
+        public int OnMove(int x, int y, int w, int h)
+        {
+            return Microsoft.VisualStudio.VSConstants.S_OK;
+        }
+
+        public int OnShow(int fShow)
+        {
+            if (fShow != (int)__FRAMESHOW.FRAMESHOW_WinClosed)
+            {
+                WhenShowWindow();
+            }
+            return Microsoft.VisualStudio.VSConstants.S_OK;
+        }
+
+        public int OnSize(int x, int y, int w, int h)
+        {
+            return Microsoft.VisualStudio.VSConstants.S_OK;
+        }
 
         /// <summary>
         /// Standard constructor for the tool window.
@@ -45,6 +85,12 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
         {
             WhenContructWindow();
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+
 
         /// <summary>
         /// Return the content of this window to be displayed after this window is constructed.
@@ -125,6 +171,21 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             ReadIDESettings();
         }
 
+        private void WhenCloseWindow()
+        {
+            if (ContextModel != null)
+            {
+                ContextModel = null;
+                EditorService.Instance.CloseEditor();
+            }
+        }
+
+
+        private void WhenShowWindow()
+        {
+            OpenSelectedContextFile();
+        }
+
         private void SetupWindow()
         {
             this.Caption = Resources.ToolWindowTitle;
@@ -140,39 +201,106 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             IDESettings.ContextFileTypeSettings = BabyIDESettings.ContextFiletype.ContextFiletype_Injectionless;
         }
 
-        private ContextViewModel _InteractionViewModel = null;
-        public ContextViewModel InteractionViewModel
-        {
-            set
-            {
-                _InteractionViewModel = value;
-                _BabyIDEEditor._InteractionView.DataContext = _InteractionViewModel;
-            }
-        }
 
-        private IWpfTextViewHost _UsecaseView = null;
-        public IWpfTextViewHost UsecaseView
+        private DCIContext _contextModel;
+        private DCIContext ContextModel
         {
+            get
+            {
+                return _contextModel;
+            }
             set
             {
-                if (_UsecaseView == null)
+                _contextModel = value;
+                if (_contextModel != null)
                 {
-                    _UsecaseView = value;
-                    if (_UsecaseView != null)
-                    {
-                        (_UsecaseView as UIElement).LostKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
-                        (_UsecaseView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
-                    }
-                    _BabyIDEEditor.UsecaseView.Content = _UsecaseView;
+                    this.UsecaseView = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.UsecaseSpan.Start, _contextModel.UsecaseSpan.Length);
+                    this.ProjectionView = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.ContextSpan.Start, _contextModel.ContextSpan.Length);
+                    this.InteractionViewModel = new ContextViewModel(_contextModel);
+                }
+                else
+                {
+                    this.UsecaseView = null;
+                    this.ProjectionView = null;
+                    this.InteractionViewModel = null;
                 }
             }
         }
 
-        private IWpfTextViewHost _ProjectionView = null;
-        public IWpfTextViewHost ProjectionView
+        private ContextViewModel _InteractionViewModel = null;
+        private ContextViewModel InteractionViewModel
+        {
+            get
+            {
+                return _InteractionViewModel;
+            }
+            set
+            {
+                if (_InteractionViewModel != null)
+                {
+                    _InteractionViewModel.PropertyChanged -= WhenInteractionViewModelChanged;
+                }
+
+                _InteractionViewModel = value;
+
+                if (_InteractionViewModel != null)
+                {
+                    _InteractionViewModel.PropertyChanged += WhenInteractionViewModelChanged;
+                }
+
+                _BabyIDEEditor._InteractionView.DataContext = _InteractionViewModel;
+            }
+        }
+
+        private void WhenInteractionViewModelChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SelectedItem")
+            {
+                dynamic role = InteractionViewModel.SelectedItem;
+                Span span = role.RoleSpan;
+                this.ProjectionView = EditorService.Instance.CreateProjectionEditor(ContextModel.Filepath,
+                    span.Start,
+                    span.Length);
+            }
+        }
+        private IWpfTextViewHost _UsecaseView = null;
+        private IWpfTextViewHost UsecaseView
         {
             set
             {
+                if (_UsecaseView != null)
+                {
+                    (_UsecaseView as UIElement).LostKeyboardFocus -= new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
+                    (_UsecaseView as UIElement).GotKeyboardFocus -= new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
+                }
+
+                _UsecaseView = value;
+
+                if (_UsecaseView != null)
+                {
+                    (_UsecaseView as UIElement).LostKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
+                    (_UsecaseView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
+                }
+
+               _BabyIDEEditor.UsecaseView.Content = _UsecaseView;
+            }
+        }
+
+        private IWpfTextViewHost _ProjectionView = null;
+        private IWpfTextViewHost ProjectionView
+        {
+            get
+            {
+                return _ProjectionView;
+            }
+            set
+            {
+                if (_ProjectionView != null)
+                {
+                    (_ProjectionView as UIElement).LostKeyboardFocus -= new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
+                    (_ProjectionView as UIElement).GotKeyboardFocus -= new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
+                }
+
                 _ProjectionView = value;
 
                 if (_ProjectionView != null)
@@ -202,11 +330,24 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             if (_BabyIDEEditor == null)
             {
                 _BabyIDEEditor = new BabyIDEEditor();
-                new ContextFileOpeningContext(ProjectSelectionService.Instance, 
-                    IDESettings, EditorService.Instance, this).Open();
             }
 
             return _BabyIDEEditor;
+        }
+
+        private void OpenSelectedContextFile()
+        {
+            if (ContextModel == null)
+            {
+                new ContextFileOpeningContext(ProjectSelectionService.Instance,
+                    IDESettings, this).Open();
+            }
+            else if (ProjectSelectionService.Instance.GetSelectedItemFullPath() != ContextModel.Filepath)                
+            {
+                WhenCloseWindow();
+                new ContextFileOpeningContext(ProjectSelectionService.Instance,
+                    IDESettings, this).Open();
+            }
         }
 
         private bool WhenPreProcessMessage(ref Message m)
@@ -262,6 +403,5 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
 
 
         #endregion
-
     }
 }

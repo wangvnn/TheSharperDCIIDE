@@ -154,6 +154,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Data\Code\RegionNodes.cs" />
     <Compile Include="Domain\Data\Settings\BabyIDESettings.cs" />
     <Compile Include="Domain\Operation\ContextFileParsingContext.cs" />
     <Compile Include="Domain\Reader\Injectionless\DCIInjectionlessContextReader.cs" />
@@ -169,7 +170,6 @@
     <Compile Include="Presentation\View\BabyIDEEditor.xaml.cs">
       <DependentUpon>BabyIDEEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presentation\Operation\ContextFileDisplayingContext.cs" />
     <Compile Include="Presentation\Operation\ContextFileOpeningContext.cs" />
     <Compile Include="Presentation\ViewModel\ContextViewModel.cs" />
     <Compile Include="Presentation\View\BabyIDEToolWindow.cs" />
@@ -178,7 +178,6 @@
     <Compile Include="Domain\Data\DCIInfo\DCIRoleInterface.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIRoleMethod.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="Presentation\ViewModel\ProjectionTextViewModelProvider.cs" />
     <Compile Include="Infrastructure\Services\EditorService.cs" />
     <Compile Include="Infrastructure\Services\ProjectSelectionService.cs" />
     <Compile Include="Presentation\View\Controls\ArrowEnds.cs" />
