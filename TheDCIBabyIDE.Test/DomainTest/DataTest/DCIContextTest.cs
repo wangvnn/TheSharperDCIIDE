@@ -22,7 +22,7 @@ namespace TheDCIBabyIDE.Test.DomainTest.DataTest
 
                         expect(() => dciContext.Name.EndsWith("FrontLoadContext"));
                         expect(() => dciContext.UsecaseSpan.Length > 0);
-                        expect(() => dciContext.ContextSpan.Length > 0);
+                        expect(() => dciContext.CodeSpan.Length > 0);
 
                         expect(() => dciContext.Roles.Count == 4);
 

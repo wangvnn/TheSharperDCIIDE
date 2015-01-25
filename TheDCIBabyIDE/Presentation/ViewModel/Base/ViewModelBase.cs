@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Reflection;
 
@@ -15,9 +16,13 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ViewModelBase()
-        { }
+        private string Id = "";
 
+        public ViewModelBase()
+        {
+            var r = new Random();
+            Id = r.Next().ToString();
+        }
 
         public ViewModelBase(T model)
         {

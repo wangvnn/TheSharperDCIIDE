@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 {
@@ -32,6 +33,21 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
             {
                 _Signatures = value;
             }
+        }
+
+        private SignatureViewModel _SelectedSignature;
+        public SignatureViewModel SelectedSignature
+        {
+            get
+            {
+                return _SelectedSignature;
+            }
+            set
+            {
+                _SelectedSignature = value;
+                RaisePropertyChangedEvent("SelectedSignature");
+            }       
+
         }
     }
 }

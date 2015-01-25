@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="KimHaiQuang.TheDCIBabyIDE.Presentation.View.BabyIDEEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:view="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.View"
+             xmlns:viewmodel="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel"          
+             xmlns:jas="clr-namespace:WPF.JoshSmith.Controls"         
+             xmlns:viewModelBase="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base"
+             viewModelBase:CommandSinkBinding.CommandSink="{Binding}"               
+             mc:Ignorable="d"
+             x:Name="TheBabyIDEView" Height="Auto" Width="Auto">
+
+    <UserControl.CommandBindings>
+        <viewModelBase:CommandSinkBinding Command="viewmodel:RoleViewModelRoutedCommands.SelectCode" />
+    </UserControl.CommandBindings>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type viewmodel:RoleViewModel}">
+                <view:RoleView />
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="BabyIDEPanel">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="5*" MaxHeight="5"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="SpecPanel">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition MaxWidth="5" Width="5*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ContentControl x:Name="UsecaseView" Margin="0"/>
+            <GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
+            <Grid x:Name="InteractionView" Grid.Row="0" Margin="0" Grid.Column="2">
+                <ScrollViewer 
+                    CanContentScroll="True"
+                    VerticalScrollBarVisibility="Hidden"
+                    HorizontalScrollBarVisibility="Hidden"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Width="1600" Height="1200">
+                    <Border>
+                        <AdornerDecorator>
+
+                            <ListBox 
+                                PreviewMouseLeftButtonDown="DragCanvas_MouseLeftButtonDown"
+                            ItemsSource="{Binding Roles}"
+                            SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}">
+                                <ListBox.Resources>
+                                    <!-- Set SelectedItem Background here -->
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Blue"/>
+                                </ListBox.Resources>
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <jas:DragCanvas />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}"/>
+                                        <Setter Property="Canvas.Left" Value="{Binding CanvasLeft}"/>
+                                        <Setter Property="Canvas.Top" Value="{Binding CanvasTop}"/>
+                                        <Setter Property="jas:DragCanvas.CanBeDragged" Value="True"/>
+                                        <Setter Property="jas:DragCanvas.BlockMouseWhileDragging" Value="False"/>
+                                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="Role_PreviewMouseLeftButtonDown" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+                        </AdornerDecorator>
+                    </Border>
+
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+        <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>
+        <Grid x:Name="CodePanel" Grid.Row="2" Grid.RowSpan="2">
+            <ContentControl x:Name="ProjectionCodeView" Margin="0"/>
+        </Grid>
+    </Grid>
+</UserControl>
+

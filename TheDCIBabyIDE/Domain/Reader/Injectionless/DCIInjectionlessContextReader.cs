@@ -128,7 +128,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
             var contextRegion = RegionReader.Where(r => r.RegionName.Contains("Context")).FirstOrDefault();
             if (contextRegion != null)
             {
-                ContextFileModel.ContextSpan = new Span(contextRegion.RegionSpan.Start, contextRegion.RegionSpan.Length);
+                ContextFileModel.CodeSpan = new Span(contextRegion.RegionSpan.Start, contextRegion.RegionSpan.Length);
             }
         }
 
@@ -165,7 +165,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
                         var newRole = new DCIRole();
                         newRole.Name = roleNode.Identifier.ToString();
-                        newRole.RoleSpan = new Span(roleNode.Span.Start, roleNode.Span.Length);
+                        newRole.CodeSpan = new Span(roleNode.Span.Start, roleNode.Span.Length);
                         ContextFileModel.AddRole(newRole);
 
                         RoleReader_ReadInterface(newRole, roleRegion, roleNodeTypeName, parentNode);
@@ -189,7 +189,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
                         var methodNode = node as MethodDeclarationSyntax;
                         var roleMethod = new DCIRoleMethod();
                         roleMethod.Name = methodNode.Identifier.ToString();
-                        roleMethod.MethodSpan = new Span(methodNode.Span.Start, methodNode.Span.Length);
+                        roleMethod.CodeSpan = new Span(methodNode.Span.Start, methodNode.Span.Length);
                         role.AddMethod(roleMethod);
                     }
                 }
@@ -220,7 +220,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
                             var length = property != null ? property.Span.Length : method.Span.Length;
 
                             newInterfaceSignature.Name = property != null ? property.Identifier.ToString() : method.Identifier.ToString();
-                            newInterfaceSignature.InterfaceSpan = new Span(start, length);
+                            newInterfaceSignature.CodeSpan = new Span(start, length);
 
                             newInterface.AddSignature(newInterfaceSignature);
                         }

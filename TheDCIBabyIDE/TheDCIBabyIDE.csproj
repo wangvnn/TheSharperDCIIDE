@@ -172,6 +172,9 @@
     </Compile>
     <Compile Include="Presentation\Operation\ContextFileOpeningContext.cs" />
     <Compile Include="Presentation\ViewModel\ContextViewModel.cs" />
+    <Compile Include="Presentation\View\BabyIDEEditorView.xaml.cs">
+      <DependentUpon>BabyIDEEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\View\BabyIDEToolWindow.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIContext.cs" />
     <Compile Include="Domain\Data\DCIInfo\DCIRole.cs" />
@@ -234,6 +237,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Presentation\View\BabyIDEEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\View\BabyIDEEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

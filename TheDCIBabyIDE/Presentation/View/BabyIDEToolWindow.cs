@@ -41,6 +41,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
 
         public void Display(DCIContext contextModel)
         {
+            _BabyIDEEditor.View.Content = new BabyIDEEditorView();
             ContextModel = contextModel;
         }
 
@@ -177,6 +178,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             {
                 ContextModel = null;
                 EditorService.Instance.CloseEditor();
+                _BabyIDEEditor.View.Content = null;
             }
         }
 
@@ -215,7 +217,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 if (_contextModel != null)
                 {
                     this.UsecaseView = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.UsecaseSpan.Start, _contextModel.UsecaseSpan.Length);
-                    this.ProjectionView = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.ContextSpan.Start, _contextModel.ContextSpan.Length);
+                    this.ProjectionView = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.CodeSpan.Start, _contextModel.CodeSpan.Length);
                     this.InteractionViewModel = new ContextViewModel(_contextModel);
                 }
                 else
@@ -238,31 +240,29 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             {
                 if (_InteractionViewModel != null)
                 {
-                    _InteractionViewModel.PropertyChanged -= WhenInteractionViewModelChanged;
+                    _InteractionViewModel.UnRegisterRoutedCommandHandlers();
+                    _InteractionViewModel.ChangeCodeSpanRequest -= WhenCodeSpanRequest;
                 }
 
                 _InteractionViewModel = value;
 
                 if (_InteractionViewModel != null)
                 {
-                    _InteractionViewModel.PropertyChanged += WhenInteractionViewModelChanged;
+                    _InteractionViewModel.ChangeCodeSpanRequest += WhenCodeSpanRequest;
                 }
 
-                _BabyIDEEditor._InteractionView.DataContext = _InteractionViewModel;
+                (_BabyIDEEditor.View.Content as BabyIDEEditorView).DataContext = _InteractionViewModel;
             }
         }
 
-        private void WhenInteractionViewModelChanged(object sender, PropertyChangedEventArgs e)
+        private void WhenCodeSpanRequest(object sender, EventArgs e)
         {
-            if (e.PropertyName == "SelectedItem")
-            {
-                dynamic role = InteractionViewModel.SelectedItem;
-                Span span = role.RoleSpan;
-                this.ProjectionView = EditorService.Instance.CreateProjectionEditor(ContextModel.Filepath,
-                    span.Start,
-                    span.Length);
-            }
+            Span span = (sender as SpanObject).CodeSpan;
+            this.ProjectionView = EditorService.Instance.CreateProjectionEditor(ContextModel.Filepath,
+                span.Start,
+                span.Length);
         }
+
         private IWpfTextViewHost _UsecaseView = null;
         private IWpfTextViewHost UsecaseView
         {
@@ -282,7 +282,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                     (_UsecaseView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
                 }
 
-               _BabyIDEEditor.UsecaseView.Content = _UsecaseView;
+               (_BabyIDEEditor.View.Content as BabyIDEEditorView).UsecaseView.Content = _UsecaseView;
             }
         }
 
@@ -308,7 +308,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                     (_ProjectionView as UIElement).LostKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
                     (_ProjectionView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
                 }
-                _BabyIDEEditor.ProjectionCodeView.Content = _ProjectionView;
+                (_BabyIDEEditor.View.Content as BabyIDEEditorView).ProjectionCodeView.Content = _ProjectionView;
             }
         }
 

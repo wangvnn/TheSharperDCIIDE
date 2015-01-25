@@ -3,13 +3,12 @@ using Microsoft.VisualStudio.Text;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 {
-    public class DCIRole
+    public class DCIRole : SpanObject
     {
         public string Name { get; set; }
         public DCIRoleInterface Interface { get; set; }
         private Dictionary<string, DCIRoleMethod> _Methods = new Dictionary<string, DCIRoleMethod>();
         public Dictionary<string, DCIRoleMethod> Methods { get { return _Methods; } }
-        public Span RoleSpan { get; set; }
 
         public DCIRole()
         {

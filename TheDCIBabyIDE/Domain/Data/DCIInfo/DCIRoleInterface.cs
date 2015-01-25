@@ -4,10 +4,9 @@ using System.Collections.Generic;
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 {
 
-    public struct DCIInterfaceSignature
+    public class DCIInterfaceSignature : SpanObject
     {
         public string Name { get; set; }
-        public Span InterfaceSpan { get; set; }
     }
 
     public class DCIRoleInterface

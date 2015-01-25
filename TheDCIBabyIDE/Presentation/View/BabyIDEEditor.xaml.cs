@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.Operation;
+using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
 {
@@ -24,5 +25,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
         {
             InitializeComponent();
         }
+
     }
 }

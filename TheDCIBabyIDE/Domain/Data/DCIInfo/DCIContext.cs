@@ -3,8 +3,12 @@ using Microsoft.VisualStudio.Text;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 {
+    public class SpanObject
+    {
+        public Span CodeSpan { get; set; }
+    }
 
-    public class DCIContext
+    public class DCIContext : SpanObject
     {
         #region public properties
 
@@ -12,7 +16,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
         public string Name { get; set; }
 
         public Span UsecaseSpan { get; set; }
-        public Span ContextSpan { get; set; }
 
         private Dictionary<string, DCIRole> _Roles = new Dictionary<string, DCIRole>();
         public Dictionary<string, DCIRole> Roles { get { return _Roles; } }

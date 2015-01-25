@@ -12,8 +12,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 {
     public class RoleViewModelRoutedCommands
     {
-        public static readonly RoutedUICommand SelectCommand =
-            new RoutedUICommand("To select a Role", "Add SelectCommand", typeof(RoleViewModelRoutedCommands));
+        public static readonly RoutedUICommand SelectCode =
+            new RoutedUICommand("To select a CodeSpane", "SelectCode", typeof(RoleViewModelRoutedCommands));
     }
 
     public class RoleViewModel : ViewModelBase<DCIRole>
@@ -71,6 +71,21 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
             set
             {
                 _Methods = value;
+            }
+        }
+
+        private MethodViewModel _SelectedMethod = null;
+        public MethodViewModel SelectedMethod
+        {
+            get
+            {
+                return _SelectedMethod;
+            }
+            set
+            {
+                _SelectedMethod = value;
+                RaisePropertyChangedEvent("SelectedMethod");
+
             }
         }
 

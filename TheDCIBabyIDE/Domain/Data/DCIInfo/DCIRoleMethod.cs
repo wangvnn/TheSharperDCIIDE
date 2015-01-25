@@ -2,9 +2,8 @@
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 {
-    public class DCIRoleMethod
+    public class DCIRoleMethod : SpanObject
     {
         public string Name { get; set; }
-        public Span MethodSpan { get; set; }
     }
 }

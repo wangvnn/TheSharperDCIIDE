@@ -37,7 +37,7 @@ namespace WPF.JoshSmith.Controls
 
 		#region Attached Properties
 
-			#region CanBeDragged
+        #region CanBeDragged
 
 		public static readonly DependencyProperty CanBeDraggedProperty;
 
@@ -49,19 +49,42 @@ namespace WPF.JoshSmith.Controls
 			return (bool)uiElement.GetValue( CanBeDraggedProperty );
 		}
 
-		public static void SetCanBeDragged( UIElement uiElement, bool value )
+
+        public static void SetCanBeDragged( UIElement uiElement, bool value )
 		{
 			if( uiElement != null )
 				uiElement.SetValue( CanBeDraggedProperty, value );
 		}
 
-			#endregion // CanBeDragged
 
-		#endregion // Attached Properties
+        public static readonly DependencyProperty BlockMouseWhileDraggingProperty;
 
-		#region Dependency Properties
+        public static bool GetBlockMouseWhileDragging(UIElement uiElement)
+        {
+            if (uiElement == null)
+                return false;
 
-		public static readonly DependencyProperty AllowDraggingProperty;
+            return (bool)uiElement.GetValue(BlockMouseWhileDraggingProperty);
+        }
+
+
+        public static void SetBlockMouseWhileDragging(UIElement uiElement, bool value)
+        {
+            if (uiElement != null)
+                uiElement.SetValue(BlockMouseWhileDraggingProperty, value);
+        }
+
+
+        
+
+
+        #endregion // CanBeDragged
+
+        #endregion // Attached Properties
+
+        #region Dependency Properties
+
+        public static readonly DependencyProperty AllowDraggingProperty;
 		public static readonly DependencyProperty AllowDragOutOfViewProperty;
 
 		#endregion // Dependency Properties
@@ -87,17 +110,23 @@ namespace WPF.JoshSmith.Controls
 				typeof( bool ),
 				typeof( DragCanvas ),
 				new UIPropertyMetadata( true ) );
-		}
 
-		#endregion // Static Constructor
+            BlockMouseWhileDraggingProperty = DependencyProperty.RegisterAttached(
+                "BlockMouseWhileDragging",
+                typeof(bool),
+                typeof(DragCanvas),
+                new UIPropertyMetadata(true));
+        }
 
-		#region Constructor
+        #endregion // Static Constructor
 
-		/// <summary>
-		/// Initializes a new instance of DragCanvas.  UIElements in
-		/// the DragCanvas will immediately be draggable by the user.
-		/// </summary>
-		public DragCanvas()
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of DragCanvas.  UIElements in
+        /// the DragCanvas will immediately be draggable by the user.
+        /// </summary>
+        public DragCanvas()
 		{
 		}
 
@@ -187,8 +216,13 @@ namespace WPF.JoshSmith.Controls
 			}
 			protected set
 			{
-				if( this.elementBeingDragged != null )
-					this.elementBeingDragged.ReleaseMouseCapture();
+                if (this.elementBeingDragged != null)
+                {
+                    if (DragCanvas.GetBlockMouseWhileDragging(value))
+                    {
+                        this.elementBeingDragged.ReleaseMouseCapture();
+                    }
+                }
 
 				if( !this.AllowDragging )
 					this.elementBeingDragged = null;
@@ -197,8 +231,11 @@ namespace WPF.JoshSmith.Controls
 					if( DragCanvas.GetCanBeDragged( value ) )
 					{
 						this.elementBeingDragged = value;
-						this.elementBeingDragged.CaptureMouse();
-					}
+                        if (DragCanvas.GetBlockMouseWhileDragging(value))
+                        {
+                            this.elementBeingDragged.CaptureMouse();
+                        }                        
+                    }
 					else
 						this.elementBeingDragged = null;
 				}
@@ -277,7 +314,7 @@ namespace WPF.JoshSmith.Controls
 			// does not react to the mouse input.
 			//e.Handled = true;
 
-			this.isDragInProgress = true;
+			this.isDragInProgress = true;            
 		}
 
 			#endregion // OnPreviewMouseLeftButtonDown
@@ -288,90 +325,90 @@ namespace WPF.JoshSmith.Controls
 		{
 			base.OnPreviewMouseMove( e );
 
-			// If no element is being dragged, there is nothing to do.
-			if( this.ElementBeingDragged == null || !this.isDragInProgress )
-				return;
+            // If no element is being dragged, there is nothing to do.
+            if (this.ElementBeingDragged == null || !this.isDragInProgress)
+                return;
 
-			// Get the position of the mouse cursor, relative to the Canvas.
-			Point cursorLocation = e.GetPosition( this );
+            // Get the position of the mouse cursor, relative to the Canvas.
+            Point cursorLocation = e.GetPosition(this);
 
-			// These values will store the new offsets of the drag element.
-			double newHorizontalOffset, newVerticalOffset;
+            // These values will store the new offsets of the drag element.
+            double newHorizontalOffset, newVerticalOffset;
 
-			#region Calculate Offsets
+            #region Calculate Offsets
 
-			// Determine the horizontal offset.
-			if( this.modifyLeftOffset )
-				newHorizontalOffset = this.origHorizOffset + (cursorLocation.X - this.origCursorLocation.X);
-			else
-				newHorizontalOffset = this.origHorizOffset - (cursorLocation.X - this.origCursorLocation.X);
+            // Determine the horizontal offset.
+            if (this.modifyLeftOffset)
+                newHorizontalOffset = this.origHorizOffset + (cursorLocation.X - this.origCursorLocation.X);
+            else
+                newHorizontalOffset = this.origHorizOffset - (cursorLocation.X - this.origCursorLocation.X);
 
-			// Determine the vertical offset.
-			if( this.modifyTopOffset )
-				newVerticalOffset = this.origVertOffset + (cursorLocation.Y - this.origCursorLocation.Y);
-			else
-				newVerticalOffset = this.origVertOffset - (cursorLocation.Y - this.origCursorLocation.Y);
+            // Determine the vertical offset.
+            if (this.modifyTopOffset)
+                newVerticalOffset = this.origVertOffset + (cursorLocation.Y - this.origCursorLocation.Y);
+            else
+                newVerticalOffset = this.origVertOffset - (cursorLocation.Y - this.origCursorLocation.Y);
 
-			#endregion // Calculate Offsets
+            #endregion // Calculate Offsets
 
-			if( ! this.AllowDragOutOfView )
-			{
-				#region Verify Drag Element Location
+            if (!this.AllowDragOutOfView)
+            {
+                #region Verify Drag Element Location
 
-				// Get the bounding rect of the drag element.
-				Rect elemRect = this.CalculateDragElementRect( newHorizontalOffset, newVerticalOffset );
+                // Get the bounding rect of the drag element.
+                Rect elemRect = this.CalculateDragElementRect(newHorizontalOffset, newVerticalOffset);
 
-				//
-				// If the element is being dragged out of the viewable area, 
-				// determine the ideal rect location, so that the element is 
-				// within the edge(s) of the canvas.
-				//
-				bool leftAlign = elemRect.Left < 0;
-				bool rightAlign = elemRect.Right > this.ActualWidth;
+                //
+                // If the element is being dragged out of the viewable area, 
+                // determine the ideal rect location, so that the element is 
+                // within the edge(s) of the canvas.
+                //
+                bool leftAlign = elemRect.Left < 0;
+                bool rightAlign = elemRect.Right > this.ActualWidth;
 
-				if( leftAlign )
-					newHorizontalOffset = modifyLeftOffset ? 0 : this.ActualWidth - elemRect.Width;
-				else if( rightAlign )
-					newHorizontalOffset = modifyLeftOffset ? this.ActualWidth - elemRect.Width : 0;
+                if (leftAlign)
+                    newHorizontalOffset = modifyLeftOffset ? 0 : this.ActualWidth - elemRect.Width;
+                else if (rightAlign)
+                    newHorizontalOffset = modifyLeftOffset ? this.ActualWidth - elemRect.Width : 0;
 
-				bool topAlign = elemRect.Top < 0;
-				bool bottomAlign = elemRect.Bottom > this.ActualHeight;
+                bool topAlign = elemRect.Top < 0;
+                bool bottomAlign = elemRect.Bottom > this.ActualHeight;
 
-				if( topAlign )
-					newVerticalOffset = modifyTopOffset ? 0 : this.ActualHeight - elemRect.Height;
-				else if( bottomAlign )
-					newVerticalOffset = modifyTopOffset ? this.ActualHeight - elemRect.Height : 0;
+                if (topAlign)
+                    newVerticalOffset = modifyTopOffset ? 0 : this.ActualHeight - elemRect.Height;
+                else if (bottomAlign)
+                    newVerticalOffset = modifyTopOffset ? this.ActualHeight - elemRect.Height : 0;
 
-				#endregion // Verify Drag Element Location
-			}
+                #endregion // Verify Drag Element Location
+            }
 
-			#region Move Drag Element
+            #region Move Drag Element
 
-			if( this.modifyLeftOffset )
-				Canvas.SetLeft( this.ElementBeingDragged, newHorizontalOffset );
-			else
-				Canvas.SetRight( this.ElementBeingDragged, newHorizontalOffset );
+            if (this.modifyLeftOffset)
+                Canvas.SetLeft(this.ElementBeingDragged, newHorizontalOffset);
+            else
+                Canvas.SetRight(this.ElementBeingDragged, newHorizontalOffset);
 
-			if( this.modifyTopOffset )
-				Canvas.SetTop( this.ElementBeingDragged, newVerticalOffset );
-			else
-				Canvas.SetBottom( this.ElementBeingDragged, newVerticalOffset );
+            if (this.modifyTopOffset)
+                Canvas.SetTop(this.ElementBeingDragged, newVerticalOffset);
+            else
+                Canvas.SetBottom(this.ElementBeingDragged, newVerticalOffset);
 
-			#endregion // Move Drag Element
-		}
+            #endregion // Move Drag Element
+        }
 
-			#endregion // OnPreviewMouseMove
+        #endregion // OnPreviewMouseMove
 
-			#region OnHostPreviewMouseUp
+        #region OnHostPreviewMouseUp
 
-		protected override void OnPreviewMouseUp( MouseButtonEventArgs e )
+        protected override void OnPreviewMouseUp( MouseButtonEventArgs e )
 		{
 			base.OnPreviewMouseUp( e );
 
-			// Reset the field whether the left or right mouse button was 
-			// released, in case a context menu was opened on the drag element.
-			this.ElementBeingDragged = null;
-		}
+            // Reset the field whether the left or right mouse button was 
+            // released, in case a context menu was opened on the drag element.
+            this.ElementBeingDragged = null;
+        }
 
 			#endregion // OnHostPreviewMouseUp
 

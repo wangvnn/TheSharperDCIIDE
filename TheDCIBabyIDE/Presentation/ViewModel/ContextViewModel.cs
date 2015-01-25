@@ -1,6 +1,8 @@
 ﻿using KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo;
 using System.Collections.ObjectModel;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base;
+using Microsoft.VisualStudio.Text;
+using System;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 {
@@ -17,17 +19,23 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
             RegisterRoutedCommandHandlers();
         }
 
+        public void UnRegisterRoutedCommandHandlers()
+        {
+            base.UnregisterCommand(RoleViewModelRoutedCommands.SelectCode);
+        }
+
         private void RegisterRoutedCommandHandlers()
         {
             base.RegisterCommand(
-                            RoleViewModelRoutedCommands.SelectCommand,
+                            RoleViewModelRoutedCommands.SelectCode,
                             param => { return true; },
-                            param => this.SelectRole(param as RoleViewModel));
+                            param => this.SelectCode(param as SpanObject));
         }
 
-        private void SelectRole(RoleViewModel role)
+        private void SelectCode(SpanObject codeSpan)
         {
-            
+            if (codeSpan != null && ChangeCodeSpanRequest != null)
+                ChangeCodeSpanRequest(codeSpan, EventArgs.Empty);
         }
 
         private ObservableCollection<RoleViewModel> _Roles = new ObservableCollection<RoleViewModel>();
@@ -97,5 +105,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
             if (maxZIndex != null && zindex != -1)
                 maxZIndex.ZIndex = zindex;
         }
+        public delegate void ChangCodeSpanRequestHandler(object sender, EventArgs e);
+        public event ChangCodeSpanRequestHandler ChangeCodeSpanRequest;
     }
 }
