@@ -1,4 +1,4 @@
-# THE SHARPDCIIDE is inspired by Trygve Reenskaug and Jim Coplien DCI Architecture
+# THE SharpDCIIDE is inspired by Trygve Reenskaug and Jim Coplien DCI Architecture
 
 - http://en.wikipedia.org/wiki/Trygve_Reenskaug
 - http://en.wikipedia.org/wiki/Jim_Coplien
