@@ -19,10 +19,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             var item = sender as ListBoxItem;
             if (item != null)
             {
-                var vm = this.DataContext as RoleViewModel;
-                if (vm.Interface != null && vm.Interface.SelectedSignature != null)
+                var vm = item.DataContext as SignatureViewModel;
+                if (vm != null)
                 {
-                    RoleViewModelRoutedCommands.SelectCode.Execute(vm.Interface.SelectedSignature.Model, item);
+                    RoleViewModelRoutedCommands.SelectCode.Execute(vm.Model, item);
                 }
             }
             e.Handled = false;
@@ -33,10 +33,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             var item = sender as ListBoxItem;
             if (item != null)
             {
-                var vm = this.DataContext as RoleViewModel;
-                if (vm.SelectedMethod != null)
+                var vm = item.DataContext as MethodViewModel;
+                if (vm != null)
                 {
-                    RoleViewModelRoutedCommands.SelectCode.Execute(vm.SelectedMethod.Model, item);
+                    RoleViewModelRoutedCommands.SelectCode.Execute(vm.Model, item);
                 }
             }
             e.Handled = false;

@@ -83,9 +83,12 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
                     RegionReader_FindAllRegions(root);
 
-                    ContextReader_Read(classNode);
-                    UsecaseReader_Read();
-                    RoleReader_Read(classNode);
+                    if (RegionReader.Count > 0)
+                    {
+                        ContextReader_Read(classNode);
+                        UsecaseReader_Read();
+                        RoleReader_Read(classNode);
+                    }
                 }
                 else
                 {
@@ -124,11 +127,38 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
         private void ContextReader_Read(ClassDeclarationSyntax parentNode)
         {
             ContextFileModel.Name = parentNode.Identifier.ToString();
+            ContextFileModel.CodeSpan = new Span(parentNode.Span.Start, parentNode.Span.Length);
 
             var contextRegion = RegionReader.Where(r => r.RegionName.Contains("Context")).FirstOrDefault();
             if (contextRegion != null)
             {
-                ContextFileModel.CodeSpan = new Span(contextRegion.RegionSpan.Start, contextRegion.RegionSpan.Length);
+                DCIRole contextRole = null;
+
+                if (contextRole == null)
+                {
+                    contextRole = new DCIRole();
+                    contextRole.Name = parentNode.Identifier.ToString();
+                    ContextFileModel.AddRole(contextRole);
+                }
+
+                foreach (var node in contextRegion.Nodes)
+                {
+                    if (node.IsKind(SyntaxKind.MethodDeclaration) &&
+                        parentNode == node.Parent)
+                    {
+
+                        var methodNode = node as MethodDeclarationSyntax;
+                        var roleMethod = new DCIRoleMethod();
+                        roleMethod.Name = methodNode.Identifier.ToString();
+                        roleMethod.CodeSpan = new Span(methodNode.Span.Start, methodNode.Span.Length);
+                        contextRole.AddMethod(roleMethod);
+                    }
+                    else if (node.IsKind(SyntaxKind.ConstructorDeclaration) &&
+                            parentNode == node.Parent)
+                    {
+                        contextRole.CodeSpan = new Span(node.Span.Start, node.Span.Length);
+                    }
+                }
             }
         }
 

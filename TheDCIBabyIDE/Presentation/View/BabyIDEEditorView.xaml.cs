@@ -32,10 +32,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             var item = sender as ListBoxItem;
             if (item != null)
             {
-                var vm = this.DataContext as ContextViewModel;
-                if (vm.SelectedItem != null)
+                var vm = item.DataContext as RoleViewModel;
+                if (vm != null)
                 {
-                    RoleViewModelRoutedCommands.SelectCode.Execute(vm.SelectedItem.Model, item);
+                    RoleViewModelRoutedCommands.SelectCode.Execute(vm.Model, item);
                 }
             }
             e.Handled = false;

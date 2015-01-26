@@ -66,7 +66,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
 
         public int OnShow(int fShow)
         {
-            if (fShow != (int)__FRAMESHOW.FRAMESHOW_WinClosed)
+            if (fShow == 12)
             {
                 WhenShowWindow();
             }
@@ -178,7 +178,12 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             {
                 ContextModel = null;
                 EditorService.Instance.CloseEditor();
-                _BabyIDEEditor.View.Content = null;
+
+                if (_BabyIDEEditor.View.Content != null)
+                {
+                    _BabyIDEEditor.View.Content = null;
+                }
+                
             }
         }
 

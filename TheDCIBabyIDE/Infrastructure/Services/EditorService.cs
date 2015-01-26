@@ -191,9 +191,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
             // Methods
             private int CalculateLeadingWhitespace(ITextBuffer buffer, Span block)
             {
-                string text = (from n in buffer.CurrentSnapshot.Lines
-                               where block.OverlapsWith((Span)n.Extent)
-                               select n).First<ITextSnapshotLine>().GetText();
+                var line = (from n in buffer.CurrentSnapshot.Lines
+                            where block.OverlapsWith((Span)n.Extent)
+                            select n).FirstOrDefault<ITextSnapshotLine>();
+                string text = line != null ?  line.GetText() : "";
                 return this.CountLeadingWhiteSpace(text);
             }
 
@@ -220,9 +221,12 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
             }
             private char GetLeadingCharacter(ITextBuffer buffer, Span block)
             {
-                string text = (from n in buffer.CurrentSnapshot.Lines
+                var line = (from n in buffer.CurrentSnapshot.Lines
                                where block.OverlapsWith((Span)n.Extent)
-                               select n).First<ITextSnapshotLine>().GetText();
+                               select n).FirstOrDefault<ITextSnapshotLine>();
+
+                string text = line != null ? line.GetText() : "";
+
                 if (text.Length != 0)
                 {
                     return text[0];

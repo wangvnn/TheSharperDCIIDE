@@ -8,75 +8,76 @@
              
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    
-    <Border BorderThickness="1" Background="Black" BorderBrush="Black" Margin="2" CornerRadius="3">
-        <StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock Foreground="White"
+    <AdornerDecorator>
+        <Border BorderThickness="1" Background="Black" BorderBrush="Black" Margin="2" CornerRadius="3">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Foreground="White"
                            Text="{Binding Name}" 
                            FontSize="14"
                            HorizontalAlignment="Center"/>
-            </StackPanel>            
-            <Border BorderThickness="1" Background="White" BorderBrush="White"/>
-            <ListBox ItemsSource="{Binding Methods}"
+                </StackPanel>
+                <Border BorderThickness="1" Background="White" BorderBrush="White"/>
+                <ListBox ItemsSource="{Binding Methods}"
                      SelectedItem="{Binding Path=SelectedMethod, Mode=TwoWay}">
-                <ListBox.Resources>
-                    <!-- Set SelectedItem Background here -->
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green"/>
-                </ListBox.Resources>
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Background="Gray" Margin="1" HorizontalAlignment="Stretch">
-                            <Label Foreground="White" 
+                    <ListBox.Resources>
+                        <!-- Set SelectedItem Background here -->
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green"/>
+                    </ListBox.Resources>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Gray" Margin="1" HorizontalAlignment="Stretch">
+                                <Label Foreground="White" 
                                    FontSize="12"
                                    Content="{Binding Name}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="RoleMethod_PreviewMouseLeftButtonDown" />
-                    </Style>
-                </ListBox.ItemContainerStyle>
-            </ListBox>
-            <Border BorderThickness="1" Background="White" BorderBrush="White"/>
-            <TextBlock Foreground="White" 
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="RoleMethod_PreviewMouseLeftButtonDown" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+                <Border BorderThickness="1" Background="White" BorderBrush="White"/>
+                <TextBlock Foreground="White" 
                        FontSize="14"
                        Text="{Binding Interface.Name}" HorizontalAlignment="Center"/>
-            <Border BorderThickness="1" Background="White" BorderBrush="White"/>
-            <ListBox ItemsSource="{Binding Interface.Signatures}"
+                <Border BorderThickness="1" Background="White" BorderBrush="White"/>
+                <ListBox ItemsSource="{Binding Interface.Signatures}"
                      SelectedItem="{Binding Path=Interface.SelectedSignature, Mode=TwoWay}">
-                <ListBox.Resources>
-                    <!-- Set SelectedItem Background here -->
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green"/>
-                </ListBox.Resources>
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Background="Gray" Margin="1" HorizontalAlignment="Stretch">
-                            <Label Foreground="White" HorizontalAlignment="Stretch"
+                    <ListBox.Resources>
+                        <!-- Set SelectedItem Background here -->
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green"/>
+                    </ListBox.Resources>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Background="Gray" Margin="1" HorizontalAlignment="Stretch">
+                                <Label Foreground="White" HorizontalAlignment="Stretch"
                                    FontSize="12"
                                    Content="{Binding Name}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="RoleInterface_PreviewMouseLeftButtonDown" />
-                    </Style>
-                </ListBox.ItemContainerStyle>
-            </ListBox>            
-        </StackPanel>
-    </Border>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="RoleInterface_PreviewMouseLeftButtonDown" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </StackPanel>
+        </Border>
+    </AdornerDecorator>
 </UserControl>
