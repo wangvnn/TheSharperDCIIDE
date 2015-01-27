@@ -27,6 +27,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
         # 2. CONTEXT READER reads CONTEXT INFO
         # 3. USECASE READER reads USECASE INFO
         # 4. ROLE READER reads ROLE INFO
+        # 5. INTERACTION READER reads INTERACTIONS
         */
 
         #endregion
@@ -40,6 +41,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
         private DCIContext ContextReader { get; set; }
         private DCIContext UsecaseReader { get; set; }
         private DCIContext RoleReader { get; set; }
+        private DCIContext InteractionReader { get; set; }
 
         #endregion
 
@@ -54,6 +56,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
             ContextReader = contextFileModel;
             UsecaseReader = contextFileModel;
             RoleReader = contextFileModel;
+            InteractionReader = contextFileModel;
         }
 
         public DCIContext Read(string filePath)
@@ -88,6 +91,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
                         ContextReader_Read(classNode);
                         UsecaseReader_Read();
                         RoleReader_Read(classNode);
+                        InteractionReader_ReadInteractions(classNode);
                     }
                 }
                 else
@@ -260,5 +264,114 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
         }
 
         #endregion
+
+        #region InteractionReader_Methods
+
+        private void InteractionReader_ReadSystemOperationInteractions(ClassDeclarationSyntax parentNode)
+        {
+            var role1 = ContextFileModel.Roles.Values.ElementAt(0);
+
+            var roleMethodRegion = RegionReader.FirstOrDefault(r => r.RegionName.Contains("Context"));
+
+            foreach (var node in roleMethodRegion.Nodes)
+            {
+                if (node.HasParentIsKindOf(SyntaxKind.MethodDeclaration))
+                {
+                    InteractionReader_FindInteraction(role1, node);
+                }
+            }
+        }
+
+        private void InteractionReader_ReadRoleInteractions(ClassDeclarationSyntax parentNode)
+        {
+            for (int i = 0; i < ContextFileModel.Roles.Values.Count; ++i)
+            {
+                var role1 = ContextFileModel.Roles.Values.ElementAt(i);
+
+                foreach (var roleMethodRegion in RegionReader.Where(r => r.RegionName.Contains("_Methods") &&
+                                                                        r.RegionName.Contains(role1.Name)))
+                {
+                    foreach (var node in roleMethodRegion.Nodes)
+                    {
+                        InteractionReader_FindInteraction(role1, node);
+                    }
+                }
+            }
+
+        }
+        private void InteractionReader_FindInteraction(DCIRole role1, SyntaxNode node)
+        {
+            if (node.IsKind(SyntaxKind.ExpressionStatement))
+            {
+                var expressson = node as ExpressionStatementSyntax;
+
+                var role2 = InteractionReader_FindTargetRole(role1, expressson.ToString());
+
+                if (role2 == null)
+                {
+                    var assignement = expressson.Expression as AssignmentExpressionSyntax;
+                    if (assignement != null)
+                        role2 = InteractionReader_FindTargetRole(role1, assignement.Right.ToString(), true);
+                }
+
+                if (role2 != null)
+                {
+                    var interaction = new DCIInteraction();
+                    interaction.Source = role1;
+                    interaction.Target = role2;
+                    interaction.Name = expressson.ToString();
+                    ContextFileModel.AddInteraction(interaction);
+                }
+
+            }
+        }
+
+        private DCIRole InteractionReader_FindTargetRole(DCIRole role1, string expression, bool checkSameName=false)
+        {
+            for (int j = 0; j < ContextFileModel.Roles.Values.Count; ++j)
+            {
+                var role2 = ContextFileModel.Roles.Values.ElementAt(j);
+
+                if (role1 != role2)
+                {
+                    if (expression.Contains(role2.Name + "_") ||
+                        expression.Contains(role2.Name + ".") ||
+                        (expression.Contains(role2.Name) && checkSameName))
+                    {
+                        return role2;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+        private void InteractionReader_ReadInteractions(ClassDeclarationSyntax parentNode)
+        {
+            InteractionReader_ReadSystemOperationInteractions(parentNode);
+            InteractionReader_ReadRoleInteractions(parentNode);
+        }
+        #endregion
+    }
+
+    public static class SyntaxNodeExtension
+    {
+        public static bool HasParentIsKindOf(this SyntaxNode node, SyntaxKind kind)
+        {
+            var result = false;
+
+            var parent = node.Parent;
+            if (parent != null)
+            {
+                result = parent.IsKind(kind);
+
+                if (!result)
+                {
+                    result = parent.HasParentIsKindOf(kind);
+                }
+            }
+
+            return result;
+        }
     }
 }

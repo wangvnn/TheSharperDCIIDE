@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base;
 using Microsoft.VisualStudio.Text;
 using System;
+using QuickGraph;
+using System.Linq;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 {
@@ -52,21 +54,40 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
             }
         }
 
+
+        private BidirectionalGraph<RoleViewModel, IEdge<RoleViewModel>> _Graph;
+        public BidirectionalGraph<RoleViewModel, IEdge<RoleViewModel>> InteractionGraph
+        {
+            get { return _Graph;  }
+            set
+            {
+                _Graph = value;
+                RaisePropertyChangedEvent("InteractionGraph");
+            }
+        }
         private void Layout()
         {
-            int zindex = 0;
-            foreach (var r in Model.Roles)
+            InteractionGraph = new BidirectionalGraph<RoleViewModel, IEdge<RoleViewModel>>();
+
+
+            for  (int zindex = Model.Roles.Values.Count-1; zindex >=0; --zindex)
             {
-                var roleViewModel = new RoleViewModel(r.Value);
+                var r = Model.Roles.Values.ElementAt(zindex);
+
+                var roleViewModel = new RoleViewModel(r);
                 Roles.Add(roleViewModel);
 
-                zindex++;
-
                 roleViewModel.ZIndex = zindex;
-                roleViewModel.CanvasLeft = zindex * 100.0;
-                roleViewModel.CanvasTop = zindex * 100.0;
+                SelectedItem = SelectedItem == null ? roleViewModel : SelectedItem;
 
-                SelectedItem = roleViewModel;
+                _Graph.AddVertex(roleViewModel);
+            }
+
+            foreach (var interaction in Model.Interactions)
+            {
+                var source = Roles.FirstOrDefault(r => r.Model == interaction.Value.Source);
+                var target = Roles.FirstOrDefault(r => r.Model == interaction.Value.Target);
+                _Graph.AddEdge(new Edge<RoleViewModel>(source, target));
             }
         }
         private RoleViewModel _SelectedItem;

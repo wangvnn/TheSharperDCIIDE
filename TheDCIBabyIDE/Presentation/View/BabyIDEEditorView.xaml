@@ -6,7 +6,10 @@
              xmlns:view="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.View"
              xmlns:viewmodel="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel"          
              xmlns:jas="clr-namespace:WPF.JoshSmith.Controls"         
+             
+             xmlns:isom="clr-namespace:GraphSharp.Algorithms.Layout.Simple.FDP;assembly=GraphSharp"
              xmlns:viewModelBase="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base"
+             
              viewModelBase:CommandSinkBinding.CommandSink="{Binding}"               
              mc:Ignorable="d"
              x:Name="TheBabyIDEView" Height="Auto" Width="Auto">
@@ -18,7 +21,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type viewmodel:RoleViewModel}">
-                <view:RoleView />
+                <view:RoleView PreviewMouseLeftButtonDown="Node_MouseLeftButtonDown"/>
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -38,41 +41,10 @@
             <ContentControl x:Name="UsecaseView" Margin="0"/>
             <GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
             <Grid x:Name="InteractionView" Grid.Row="0" Margin="0" Grid.Column="2">
-                <ScrollViewer 
-                    CanContentScroll="True"
-                    VerticalScrollBarVisibility="Hidden"
-                    HorizontalScrollBarVisibility="Hidden"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"
-                    Width="1600" Height="1200">
-                    <Border>
-                        <ListBox 
-                            PreviewMouseLeftButtonDown="DragCanvas_MouseLeftButtonDown"
-                        ItemsSource="{Binding Roles}"
-                        SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}">
-                            <ListBox.Resources>
-                                <!-- Set SelectedItem Background here -->
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Blue"/>
-                            </ListBox.Resources>
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <jas:DragCanvas />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}"/>
-                                    <Setter Property="Canvas.Left" Value="{Binding CanvasLeft}"/>
-                                    <Setter Property="Canvas.Top" Value="{Binding CanvasTop}"/>
-                                    <Setter Property="jas:DragCanvas.CanBeDragged" Value="True"/>
-                                    <Setter Property="jas:DragCanvas.BlockMouseWhileDragging" Value="False"/>
-                                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="Role_PreviewMouseLeftButtonDown" />
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                        </ListBox>
-                    </Border>
-
-                </ScrollViewer>
+                <view:RoleInteractionGraph x:Name="InteractionGraphView"
+                                  PreviewMouseLeftButtonDown="Graph_MouseLeftButtonDown">
+                    
+                </view:RoleInteractionGraph>
             </Grid>
         </Grid>
         <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>
