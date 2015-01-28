@@ -301,28 +301,22 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
         }
         private void InteractionReader_FindInteraction(DCIRole role1, SyntaxNode node)
         {
-            if (node.IsKind(SyntaxKind.ExpressionStatement))
+            var role2 = InteractionReader_FindTargetRole(role1, node.ToString());
+
+            if (role2 == null && node.IsKind(SyntaxKind.ExpressionStatement))
             {
-                var expressson = node as ExpressionStatementSyntax;
+                var assignement = (node as ExpressionStatementSyntax).Expression as AssignmentExpressionSyntax;
+                if (assignement != null)
+                    role2 = InteractionReader_FindTargetRole(role1, assignement.Right.ToString(), true);
+            }
 
-                var role2 = InteractionReader_FindTargetRole(role1, expressson.ToString());
-
-                if (role2 == null)
-                {
-                    var assignement = expressson.Expression as AssignmentExpressionSyntax;
-                    if (assignement != null)
-                        role2 = InteractionReader_FindTargetRole(role1, assignement.Right.ToString(), true);
-                }
-
-                if (role2 != null)
-                {
-                    var interaction = new DCIInteraction();
-                    interaction.Source = role1;
-                    interaction.Target = role2;
-                    interaction.Name = expressson.ToString();
-                    ContextFileModel.AddInteraction(interaction);
-                }
-
+            if (role2 != null)
+            {
+                var interaction = new DCIInteraction();
+                interaction.Source = role1;
+                interaction.Target = role2;
+                interaction.Name = node.ToString();
+                ContextFileModel.AddInteraction(interaction);
             }
         }
 

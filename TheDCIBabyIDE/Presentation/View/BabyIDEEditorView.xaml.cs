@@ -31,9 +31,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 InteractionGraphView.AsyncCompute = true;
                 InteractionGraphView.ShowAllStates = false;
                 InteractionGraphView.HighlightAlgorithmType = "Simple";
-                InteractionGraphView.OverlapRemovalConstraint = AlgorithmConstraints.Automatic;
-                InteractionGraphView.OverlapRemovalAlgorithmType = "FSA";
                 InteractionGraphView.OverlapRemovalConstraint = AlgorithmConstraints.Must;
+                InteractionGraphView.OverlapRemovalAlgorithmType = "FSA";
             }
 
         }
