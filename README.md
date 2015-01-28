@@ -10,3 +10,4 @@ http://joshvarty.wordpress.com/2014/08/01/ripping-the-visual-studio-editor-apart
 Tools: 
 - GraphSharp: https://graphsharp.codeplex.com/
 - https://joshsmithonwpf.wordpress.com/
+- NJasmine: https://github.com/fschwiet/DreamNJasmine
