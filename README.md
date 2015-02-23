@@ -21,11 +21,17 @@ How to use:
 Build the extention
 
 1) Open the project in Visual Studio 2013 Community version
+
 2) Build release/debug version
+
 3) Open bin folder and run TheDCIBabyIDE.vsix to install the extension
+
 4) Restart Visual studio, open the project again 
+
 5) Open file with postfix _Context.cs (eg ContextFileOpeningContext.cs)
+
 6) Right click in the editor and select 'open in DCI Baby IDE'
+
 
 Debug:
 
