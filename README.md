@@ -15,3 +15,26 @@ Tools:
 Screenshots:
 - http://goo.gl/qfh5uI
 - http://goo.gl/8TjkXb
+
+How to use:
+
+Build the extention
+
+1) Open the project in Visual Studio 2013 Community version
+2) Build release/debug version
+3) Open bin folder and run TheDCIBabyIDE.vsix to install the extension
+4) Restart Visual studio, open the project again 
+5) Open file with postfix _Context.cs (eg ContextFileOpeningContext.cs)
+6) Right click in the editor and select 'open in DCI Baby IDE'
+
+Debug:
+
+1) Open the project in Visual Studio 2013 Community Version
+
+2) Project settings:
+-Start external program:
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe
+-Cmd line arguments:
+/rootsuffix Exp /log
+
+3) F5 to run and debug
