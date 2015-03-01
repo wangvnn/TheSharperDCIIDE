@@ -90,7 +90,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
             return EditorService.EditorAdaptersFactoryService.GetViewAdapter(host.TextView);
         }
 
-        public IWpfTextViewHost CreateProjectionEditor(string filePath, int start, int length)
+        public IWpfTextViewHost CreateProjectionEditor(string filePath, int start, int length, bool isReadonly = true)
         {
             IntPtr zero = IntPtr.Zero;
             Guid gUID = typeof(IVsTextLines).GUID;
@@ -130,7 +130,14 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
             dataBuffer.Properties.AddProperty("StartPosition", start);
             dataBuffer.Properties.AddProperty("EndPosition", start + length);
 
-            return EditorService.EditorAdaptersFactoryService.GetWpfTextViewHost(view);
+            var host = EditorService.EditorAdaptersFactoryService.GetWpfTextViewHost(view);
+            if (isReadonly)
+            {
+                host.TextView.Options.SetOptionValue(DefaultTextViewOptions.ViewProhibitUserInputName, true);
+            }
+
+            host.TextView.Options.SetOptionValue(DefaultTextViewHostOptions.ShowMarksOptionName, true);
+            return host;
         }
         private uint _docCookie = 0;
         public void CloseEditor()

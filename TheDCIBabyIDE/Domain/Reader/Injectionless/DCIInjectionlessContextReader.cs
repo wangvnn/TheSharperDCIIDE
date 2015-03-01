@@ -153,7 +153,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
                         var methodNode = node as MethodDeclarationSyntax;
                         var roleMethod = new DCIRoleMethod();
+                        var underScoreIndex = methodNode.Identifier.ToString().IndexOf("_");
+
                         roleMethod.Name = methodNode.Identifier.ToString();
+
                         roleMethod.CodeSpan = new Span(methodNode.Span.Start, methodNode.Span.Length);
                         contextRole.AddMethod(roleMethod);
                     }
@@ -213,7 +216,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
         private void RoleReader_ReadMethods(DCIRole role, ClassDeclarationSyntax parentNode)
         {
             foreach (var roleMethodRegion in RegionReader.Where(r => r.RegionName.Contains("_Methods") &&
-                                                                        r.RegionName.Contains(role.Name)))
+                                                                        r.RegionName.Contains(role.Name+"_")))
             {
                 foreach (var node in roleMethodRegion.Nodes)
                 {
@@ -222,7 +225,17 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
                     {
                         var methodNode = node as MethodDeclarationSyntax;
                         var roleMethod = new DCIRoleMethod();
-                        roleMethod.Name = methodNode.Identifier.ToString();
+
+                        var underScoreIndex = methodNode.Identifier.ToString().IndexOf("_");
+
+                        if (underScoreIndex >= 0 && underScoreIndex < methodNode.Identifier.ToString().Length - 1)
+                        {
+                            roleMethod.Name = methodNode.Identifier.ToString().Substring(underScoreIndex + 1);
+                        }
+                        else
+                        {
+                            roleMethod.Name = methodNode.Identifier.ToString();
+                        }
                         roleMethod.CodeSpan = new Span(methodNode.Span.Start, methodNode.Span.Length);
                         role.AddMethod(roleMethod);
                     }
@@ -267,7 +280,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
         #region InteractionReader_Methods
 
-        private void InteractionReader_ReadSystemOperationInteractions(ClassDeclarationSyntax parentNode)
+        private void InteractionReader_ReadContextInteractions(ClassDeclarationSyntax parentNode)
         {
             var role1 = ContextFileModel.Roles.Values.ElementAt(0);
 
@@ -275,7 +288,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
             foreach (var node in roleMethodRegion.Nodes)
             {
-                if (node.HasParentIsKindOf(SyntaxKind.MethodDeclaration))
+                if (node.HasParentIsKindOf(SyntaxKind.MethodDeclaration) ||
+                    node.HasParentIsKindOf(SyntaxKind.ConstructorDeclaration))
                 {
                     InteractionReader_FindInteraction(role1, node);
                 }
@@ -342,7 +356,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
         private void InteractionReader_ReadInteractions(ClassDeclarationSyntax parentNode)
         {
-            InteractionReader_ReadSystemOperationInteractions(parentNode);
+            InteractionReader_ReadContextInteractions(parentNode);
             InteractionReader_ReadRoleInteractions(parentNode);
         }
         #endregion

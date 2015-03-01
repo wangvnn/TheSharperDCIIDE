@@ -6,7 +6,7 @@
              xmlns:view="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.View"
              xmlns:viewmodel="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel"          
              xmlns:jas="clr-namespace:WPF.JoshSmith.Controls"         
-             
+             xmlns:wpfextentions="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
              xmlns:isom="clr-namespace:GraphSharp.Algorithms.Layout.Simple.FDP;assembly=GraphSharp"
              xmlns:viewModelBase="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base"
              
@@ -41,10 +41,12 @@
             <ContentControl x:Name="UsecaseView" Margin="0"/>
             <GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
             <Grid x:Name="InteractionView" Grid.Row="0" Margin="0" Grid.Column="2">
-                <view:RoleInteractionGraph x:Name="InteractionGraphView"
+                <wpfextentions:ZoomControl>
+                    <view:RoleInteractionGraph x:Name="InteractionGraphView"
                                   PreviewMouseLeftButtonDown="Graph_MouseLeftButtonDown">
-                    
-                </view:RoleInteractionGraph>
+
+                    </view:RoleInteractionGraph>
+                </wpfextentions:ZoomControl>
             </Grid>
         </Grid>
         <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>
