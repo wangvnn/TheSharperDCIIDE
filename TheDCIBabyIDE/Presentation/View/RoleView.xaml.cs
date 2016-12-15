@@ -41,5 +41,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
             }
             e.Handled = false;
         }
+
+        private void OnToggleInterfaceView(object sender, System.Windows.RoutedEventArgs e)
+        {
+            RoleViewModelRoutedCommands.ToggleInterfaceView.Execute(DataContext as RoleViewModel, this);
+        }        
     }
 }

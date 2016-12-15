@@ -14,6 +14,9 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
     {
         public static readonly RoutedUICommand SelectCode =
             new RoutedUICommand("To select a CodeSpane", "SelectCode", typeof(RoleViewModelRoutedCommands));
+
+        public static readonly RoutedUICommand ToggleInterfaceView =
+            new RoutedUICommand("Toggle Interface View", "ToggleInterfaceView", typeof(RoleViewModelRoutedCommands));
     }
 
     public class RoleViewModel : ViewModelBase<DCIRole>
@@ -89,17 +92,44 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
             }
         }
 
-        public InterfaceViewModel Interface { get; private set; }
+        private InterfaceViewModel _Interface;
+        public InterfaceViewModel Interface 
+        { 
+            get
+            {
+                return _Interface;
+            } 
+            private set
+            {
+                _Interface = value;
+                RaisePropertyChangedEvent("Interface");
+                RaisePropertyChangedEvent("HasInterface");
+            }
+        }
+        public bool HasInterface { get { return _Interface != null; } }
 
         public RoleViewModel(DCIRole model)
             :base(model)
         {
             if (model.Interface != null)
+            {
                 Interface = new InterfaceViewModel(model.Interface);
+            }
+
             foreach(var m in model.Methods)
             {
                 Methods.Add(new MethodViewModel(m.Value));
             }
+        }
+
+        private bool _ShowInterface = false;
+
+        public void ToggleInterfaceView()
+        {
+            _ShowInterface = !_ShowInterface;
+
+            if (Interface != null)
+                Interface.Show(_ShowInterface);
         }
     }
 }

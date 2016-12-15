@@ -6,16 +6,19 @@
              xmlns:view="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.View"
              xmlns:viewmodel="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel"          
              xmlns:jas="clr-namespace:WPF.JoshSmith.Controls"         
-             xmlns:wpfextentions="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
+             
+             xmlns:wpfextention="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
+             
              xmlns:isom="clr-namespace:GraphSharp.Algorithms.Layout.Simple.FDP;assembly=GraphSharp"
              xmlns:viewModelBase="clr-namespace:KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base"
              
              viewModelBase:CommandSinkBinding.CommandSink="{Binding}"               
              mc:Ignorable="d"
              x:Name="TheBabyIDEView" Height="Auto" Width="Auto">
-
+    
     <UserControl.CommandBindings>
         <viewModelBase:CommandSinkBinding Command="viewmodel:RoleViewModelRoutedCommands.SelectCode" />
+        <viewModelBase:CommandSinkBinding Command="viewmodel:RoleViewModelRoutedCommands.ToggleInterfaceView" />
     </UserControl.CommandBindings>
 
     <UserControl.Resources>
@@ -30,27 +33,26 @@
             <RowDefinition />
             <RowDefinition Height="5*" MaxHeight="5"/>
             <RowDefinition/>
-            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid x:Name="SpecPanel">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition MaxWidth="5" Width="5*"/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <ContentControl x:Name="UsecaseView" Margin="0"/>
             <GridSplitter x:Name="UsecaseInterationSplitter" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="5" Grid.Column="1"/>
-            <Grid x:Name="InteractionView" Grid.Row="0" Margin="0" Grid.Column="2">
-                <wpfextentions:ZoomControl>
-                    <view:RoleInteractionGraph x:Name="InteractionGraphView"
-                                  PreviewMouseLeftButtonDown="Graph_MouseLeftButtonDown">
-
+            <Grid x:Name="InteractionView" Grid.Row="0" Margin="0" Grid.Column="2" Grid.ColumnSpan="2">
+                <wpfextention:ZoomControl>
+                    <view:RoleInteractionGraph x:Name="InteractionGraphView" 
+                        PreviewMouseLeftButtonDown="Graph_MouseLeftButtonDown">
                     </view:RoleInteractionGraph>
-                </wpfextentions:ZoomControl>
+                </wpfextention:ZoomControl>
             </Grid>
         </Grid>
-        <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="1" ResizeDirection="Rows"/>
-        <Grid x:Name="CodePanel" Grid.Row="2" Grid.RowSpan="2">
+        <GridSplitter x:Name="GeneratedProjectedSplitter" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="5" Grid.Row="2" ResizeDirection="Rows"/>
+        <Grid x:Name="CodePanel" Grid.Row="2" Grid.RowSpan="1">
             <ContentControl x:Name="ProjectionCodeView" Margin="0"/>
         </Grid>
     </Grid>

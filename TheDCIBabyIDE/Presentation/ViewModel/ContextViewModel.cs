@@ -24,6 +24,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
         public void UnRegisterRoutedCommandHandlers()
         {
             base.UnregisterCommand(RoleViewModelRoutedCommands.SelectCode);
+            base.UnregisterCommand(RoleViewModelRoutedCommands.ToggleInterfaceView);
         }
 
         private void RegisterRoutedCommandHandlers()
@@ -32,12 +33,25 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
                             RoleViewModelRoutedCommands.SelectCode,
                             param => { return true; },
                             param => this.SelectCode(param as SpanObject));
+
+            base.RegisterCommand(
+                            RoleViewModelRoutedCommands.ToggleInterfaceView,
+                            param => { return true; },
+                            param => this.ToggleInterfaceView(param as RoleViewModel));
         }
 
         private void SelectCode(SpanObject codeSpan)
         {
             if (codeSpan != null && ChangeCodeSpanRequest != null)
                 ChangeCodeSpanRequest(codeSpan, EventArgs.Empty);
+        }
+
+        private void ToggleInterfaceView(RoleViewModel roleVM)
+        {
+            if (roleVM != null)
+            {
+                roleVM.ToggleInterfaceView();
+            }
         }
 
         private ObservableCollection<RoleViewModel> _Roles = new ObservableCollection<RoleViewModel>();
@@ -85,8 +99,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
 
             foreach (var interaction in Model.Interactions)
             {
-                var source = Roles.FirstOrDefault(r => r.Model == interaction.Value.Source);
-                var target = Roles.FirstOrDefault(r => r.Model == interaction.Value.Target);
+                var source = Roles.FirstOrDefault(r => r.Model == interaction.Source);
+                var target = Roles.FirstOrDefault(r => r.Model == interaction.Target);
                 _Graph.AddEdge(new Edge<RoleViewModel>(source, target));
             }
         }

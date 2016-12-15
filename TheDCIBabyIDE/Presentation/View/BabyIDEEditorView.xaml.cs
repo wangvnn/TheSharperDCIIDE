@@ -14,7 +14,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
     {
         public BabyIDEEditorView()
         {
-            var a = System.Reflection.Assembly.Load("WPFExtensions, Version=1.0.3437.34043, Culture=neutral, PublicKeyToken=null");
+            System.Reflection.Assembly.Load("WPFExtensions, Version=1.0.3437.34043, Culture=neutral, PublicKeyToken=null");
+            //System.Reflection.Assembly.Load("GraphSharp.Controls, Version=1.0.5506.20680, Culture=neutral, PublicKeyToken=null");
 
             InitializeComponent();
 
@@ -31,10 +32,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 InteractionGraphView.AsyncCompute = true;
                 InteractionGraphView.ShowAllStates = false;
                 InteractionGraphView.HighlightAlgorithmType = "Simple";
-                InteractionGraphView.OverlapRemovalConstraint = AlgorithmConstraints.Must;
+                InteractionGraphView.OverlapRemovalConstraint = AlgorithmConstraints.Automatic;
                 InteractionGraphView.OverlapRemovalAlgorithmType = "FSA";
+                InteractionGraphView.OverlapRemovalConstraint = AlgorithmConstraints.Must;               
             }
-
         }
 
         private void Graph_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -68,6 +69,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
 
         }
     }
+    
 
-    public class RoleInteractionGraph : GraphLayout<RoleViewModel, IEdge<RoleViewModel>, IBidirectionalGraph<RoleViewModel, IEdge<RoleViewModel>>> { }
 }

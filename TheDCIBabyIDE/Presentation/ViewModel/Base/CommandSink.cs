@@ -44,7 +44,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base
         void ExecuteCommand(ICommand command, object parameter, out bool handled);
     }
 
-    #endregion // ICommandSink
+    #endregion // ICommandSinky
 
     #region CommandSink
 

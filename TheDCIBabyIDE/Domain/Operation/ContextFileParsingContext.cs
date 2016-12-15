@@ -59,6 +59,22 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Operation
 
         public DCIContext Parse(string filePath)
         {
+            if (filePath.Contains(".zen"))
+            {
+                using (var file = File.OpenText(filePath))
+                {
+                    var sourceCode = file.ReadToEnd();
+                    Zen2Cs.Transform(ref sourceCode);
+
+                    filePath = Path.GetTempPath() + Path.GetFileName(filePath);
+
+                    using (var writer = new StreamWriter(filePath))
+                    {
+                        writer.Write(sourceCode);
+                    }
+                }
+            }
+
             ContextFileModel.Filepath = filePath;
             DCIContextReader.Read(filePath);
 

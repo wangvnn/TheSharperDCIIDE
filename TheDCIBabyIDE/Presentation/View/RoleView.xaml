@@ -46,9 +46,17 @@
                     </ListBox.ItemContainerStyle>
                 </ListBox>
                 <Border BorderThickness="1" Background="White" BorderBrush="White"/>
-                <TextBlock Foreground="White" 
-                       FontSize="14"
-                       Text="{Binding Interface.Name}" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Visibility="{Binding HasInterface, Converter={StaticResource BooleanToVisibilityConverter}}"  
+                            Content="*" VerticalAlignment="Top"  HorizontalAlignment="Left" Click="OnToggleInterfaceView">
+                        <Button.Resources>
+                            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                        </Button.Resources>                        
+                    </Button>                    
+                    <TextBlock Foreground="White" 
+                           FontSize="14"
+                           Text="{Binding Interface.Name}" HorizontalAlignment="Center"/>
+                </StackPanel>
                 <Border BorderThickness="1" Background="White" BorderBrush="White"/>
                 <ListBox ItemsSource="{Binding Interface.Signatures}"
                      SelectedItem="{Binding Path=Interface.SelectedSignature, Mode=TwoWay}">

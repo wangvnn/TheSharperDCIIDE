@@ -183,7 +183,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 {
                     _BabyIDEEditor.View.Content = null;
                 }
-                
+
             }
         }
 
@@ -287,7 +287,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                     (_UsecaseView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
                 }
 
-               (_BabyIDEEditor.View.Content as BabyIDEEditorView).UsecaseView.Content = _UsecaseView;
+                (_BabyIDEEditor.View.Content as BabyIDEEditorView).UsecaseView.Content = _UsecaseView;
             }
         }
 
@@ -347,7 +347,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 new ContextFileOpeningContext(ProjectSelectionService.Instance,
                     IDESettings, this).Open();
             }
-            else if (ProjectSelectionService.Instance.GetSelectedItemFullPath() != ContextModel.Filepath)                
+            else if (ProjectSelectionService.Instance.GetSelectedItemFullPath() != ContextModel.Filepath)
             {
                 WhenCloseWindow();
                 new ContextFileOpeningContext(ProjectSelectionService.Instance,

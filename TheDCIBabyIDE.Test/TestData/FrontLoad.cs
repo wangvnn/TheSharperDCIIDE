@@ -31,6 +31,7 @@ namespace ProkonDCI.Domain.Operation
         private FrontLoadContext FrontLoader { get; private set; }
 
         private UnPlannedActivityRole UnPlannedActivity { get; private set; }
+
         public interface UnPlannedActivityRole
         {
             int EarlyStart { get; set; }

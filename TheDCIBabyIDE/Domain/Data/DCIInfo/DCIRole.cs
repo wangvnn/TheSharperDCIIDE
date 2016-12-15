@@ -16,12 +16,14 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 
         public void AddMethod(DCIRoleMethod method)
         {
-            _Methods.Add(method.Name, method);
+            if (!Methods.ContainsKey(method.Name))
+                _Methods.Add(method.Name, method);
         }
 
         public void Remove(string name)
         {
-            _Methods.Remove(name);
+            if (Methods.ContainsKey(name))
+                _Methods.Remove(name);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
         #region Roles
 
-         private DCIContext ContextFileModel { get; set; }
+        private DCIContext ContextFileModel { get; set; }
 
         private List<RegionNodes> RegionReader { get; set; }
 
@@ -78,7 +78,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
             }
             using (var file = File.OpenText(filePath))
             {
-                var tree = CSharpSyntaxTree.ParseText(file.ReadToEnd());
+                var sourceCode = file.ReadToEnd();
+                var tree = CSharpSyntaxTree.ParseText(sourceCode);
                 var root = tree.GetRoot();
                 if (root != null)
                 {
@@ -142,6 +143,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
                 {
                     contextRole = new DCIRole();
                     contextRole.Name = parentNode.Identifier.ToString();
+                    contextRole.CodeSpan = new Span(contextRegion.RegionSpan.Start, contextRegion.RegionSpan.Length);
                     ContextFileModel.AddRole(contextRole);
                 }
 
@@ -153,10 +155,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
                         var methodNode = node as MethodDeclarationSyntax;
                         var roleMethod = new DCIRoleMethod();
-                        var underScoreIndex = methodNode.Identifier.ToString().IndexOf("_");
-
-                        roleMethod.Name = methodNode.Identifier.ToString();
-
+                        var methodName = methodNode.Identifier.ToString();
+                        roleMethod.Name = methodName.Contains("_") ? methodName.Substring(methodName.IndexOf("_")+1) :methodName;
                         roleMethod.CodeSpan = new Span(methodNode.Span.Start, methodNode.Span.Length);
                         contextRole.AddMethod(roleMethod);
                     }
@@ -193,20 +193,39 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
             {
                 foreach (var node in roleRegion.Nodes)
                 {
-                    if (node.IsKind(SyntaxKind.PropertyDeclaration) &&
-                        parentNode == node.Parent)
+                    if (parentNode == node.Parent )
                     {
-                        var roleNode = node as PropertyDeclarationSyntax;
-                        var roleTypeNode = (roleNode.Type as IdentifierNameSyntax);
-                        var roleNodeTypeName = roleTypeNode != null ? roleTypeNode.Identifier.ToString() : "";
+                        var roleNodeTypeName = "";
+                        var newRoleName = "";
+                        
+                        if (node.IsKind(SyntaxKind.PropertyDeclaration))
+                        {
+                            var roleNode = node as PropertyDeclarationSyntax;
 
-                        var newRole = new DCIRole();
-                        newRole.Name = roleNode.Identifier.ToString();
-                        newRole.CodeSpan = new Span(roleNode.Span.Start, roleNode.Span.Length);
-                        ContextFileModel.AddRole(newRole);
+                            var roleTypeNode = (roleNode.Type as IdentifierNameSyntax);
+                            roleNodeTypeName = roleTypeNode != null ? roleTypeNode.Identifier.ToString() : "";
+                            newRoleName = roleNode.Identifier.ToString();
 
-                        RoleReader_ReadInterface(newRole, roleRegion, roleNodeTypeName, parentNode);
-                        RoleReader_ReadMethods(newRole, parentNode);
+                        }
+                        else if  (node.IsKind(SyntaxKind.FieldDeclaration))
+                        {
+                            var roleNode = node as FieldDeclarationSyntax;
+                            var roleTypeNode = (roleNode.Declaration.Type as IdentifierNameSyntax);
+
+                            roleNodeTypeName = roleTypeNode != null ? roleTypeNode.Identifier.ToString() : "";
+                            newRoleName = roleNode.Declaration.Variables[0].Identifier.ToString();                            
+                        }
+                       
+                        if (!String.IsNullOrEmpty(newRoleName))
+                        {
+                            var newRole = new DCIRole();
+                            newRole.Name = newRoleName;
+                            newRole.CodeSpan = new Span(node.Span.Start, node.Span.Length);
+                            ContextFileModel.AddRole(newRole);
+
+                            RoleReader_ReadInterface(newRole, roleRegion, roleNodeTypeName, parentNode);
+                            RoleReader_ReadMethods(newRole, parentNode);
+                        }
                     }
                 }
             }
@@ -215,8 +234,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
         private void RoleReader_ReadMethods(DCIRole role, ClassDeclarationSyntax parentNode)
         {
-            foreach (var roleMethodRegion in RegionReader.Where(r => r.RegionName.Contains("_Methods") &&
-                                                                        r.RegionName.Contains(role.Name+"_")))
+            foreach (var roleMethodRegion in RegionReader.Where(r => r.RegionName.Contains(" "+role.Name+"_Methods")))
             {
                 foreach (var node in roleMethodRegion.Nodes)
                 {
@@ -225,17 +243,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
                     {
                         var methodNode = node as MethodDeclarationSyntax;
                         var roleMethod = new DCIRoleMethod();
-
-                        var underScoreIndex = methodNode.Identifier.ToString().IndexOf("_");
-
-                        if (underScoreIndex >= 0 && underScoreIndex < methodNode.Identifier.ToString().Length - 1)
-                        {
-                            roleMethod.Name = methodNode.Identifier.ToString().Substring(underScoreIndex + 1);
-                        }
-                        else
-                        {
-                            roleMethod.Name = methodNode.Identifier.ToString();
-                        }
+                        var methodName = methodNode.Identifier.ToString();
+                        roleMethod.Name = methodName.Contains("_") ? methodName.Substring(methodName.IndexOf("_") + 1) : methodName;
                         roleMethod.CodeSpan = new Span(methodNode.Span.Start, methodNode.Span.Length);
                         role.AddMethod(roleMethod);
                     }
@@ -302,8 +311,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
             {
                 var role1 = ContextFileModel.Roles.Values.ElementAt(i);
 
-                foreach (var roleMethodRegion in RegionReader.Where(r => r.RegionName.Contains("_Methods") &&
-                                                                        r.RegionName.Contains(role1.Name)))
+                foreach (var roleMethodRegion in RegionReader.Where(r => r.RegionName.Contains(" " + role1.Name+"_Methods")))
                 {
                     foreach (var node in roleMethodRegion.Nodes)
                     {
@@ -315,16 +323,16 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
         }
         private void InteractionReader_FindInteraction(DCIRole role1, SyntaxNode node)
         {
-            var role2 = InteractionReader_FindTargetRole(role1, node.ToString());
+            List<DCIRole> role2List = new List<DCIRole>();
+            InteractionReader_FindTargetRole(role1, node.ToString(), ref role2List);
 
-            if (role2 == null && node.IsKind(SyntaxKind.ExpressionStatement))
+            var assignement = node as AssignmentExpressionSyntax;
+            if (assignement != null)
             {
-                var assignement = (node as ExpressionStatementSyntax).Expression as AssignmentExpressionSyntax;
-                if (assignement != null)
-                    role2 = InteractionReader_FindTargetRole(role1, assignement.Right.ToString(), true);
+                InteractionReader_FindTargetRole(role1, assignement.Right.ToString(), ref role2List, true);
             }
 
-            if (role2 != null)
+            foreach (var role2 in role2List)
             {
                 var interaction = new DCIInteraction();
                 interaction.Source = role1;
@@ -334,7 +342,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
             }
         }
 
-        private DCIRole InteractionReader_FindTargetRole(DCIRole role1, string expression, bool checkSameName=false)
+        private void  InteractionReader_FindTargetRole(DCIRole role1, string expression, ref List<DCIRole> roles, bool checkSameName=false)
         {
             for (int j = 0; j < ContextFileModel.Roles.Values.Count; ++j)
             {
@@ -342,17 +350,82 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Reader.Injectionless
 
                 if (role1 != role2)
                 {
-                    if (expression.Contains(role2.Name + "_") ||
-                        expression.Contains(role2.Name + ".") ||
-                        (expression.Contains(role2.Name) && checkSameName))
+                    bool callingRoleMethod = expression.Contains(" " + role2.Name + "_");
+                    bool callingDataMethod = expression.Contains(" " + role2.Name + ".") ||                        
+                                             expression.Contains("(" + role2.Name + ".") ||
+                                             expression.Contains("!" + role2.Name + ".");
+
+                    bool assignment = (expression.Contains(" " + role2.Name) && checkSameName);
+
+                    bool usedAsParams = expression.Contains("(" + role2.Name + ")") ||
+                                        expression.Contains("(" + role2.Name + ", ") ||
+                                        expression.Contains(", " + role2.Name + ",") ||
+                                        expression.Contains(", " + role2.Name + ")") ||
+                                        expression.Contains("(!" + role2.Name + ")") ||
+                                        expression.Contains("(!" + role2.Name + ", ") ||
+                                        expression.Contains(", !" + role2.Name + ",") ||
+                                        expression.Contains(", !" + role2.Name + ")");
+
+                    // Calling
+                    if ( callingRoleMethod ||callingDataMethod || assignment || usedAsParams)
                     {
-                        return role2;
+                        roles.Add(role2);
+
+                        if (callingDataMethod)
+                        {
+                            InteractionReader_AddRoleMethods(ref role2, expression);
+                        }
+                    }
+                }
+            }            
+        }
+        void InteractionReader_AddRoleMethods(ref DCIRole role, string expression)
+        {
+            if (role.Interface == null)
+            {
+                var newInterface = new DCIRoleInterface();
+                newInterface.Name = "methods";
+                role.Interface = newInterface;
+            }
+
+            for (int nameStart = 0; nameStart < expression.Length; ++nameStart)
+            {
+                var nameEnd = nameStart + role.Name.Length + 1;
+
+                if (nameEnd < expression.Length && expression[nameStart + 1] != ' ' &&
+                    (expression[nameStart + 1] != ' ' || expression[nameStart + 1] != '('))
+                {
+                    string name = expression.Substring(nameStart+1, nameEnd - nameStart);
+
+                    if (name.ToLower().Equals(role.Name.ToLower()+"."))
+                    {
+                        var methodStart = nameStart + role.Name.Length + 2;
+
+                        string[] endChar = {" ", ";", "(", ".", ")", ",", "/", "+", "*" };
+
+                        var methodEnd = expression.Length;
+                        for (int k = 0; k < endChar.Length; ++k)
+                        {
+                            var me = expression.IndexOf(endChar[k], methodStart);
+                            me = me < 0 ? expression.Length : me;
+                            methodEnd = Math.Min(methodEnd, me);
+                         }
+
+                        if (methodEnd >= 0 && methodEnd < expression.Length)
+                        {
+                            var methodName = expression.Substring(methodStart, methodEnd - methodStart);
+                            methodName = Char.ToLower(methodName[0]) + methodName.Substring(1);
+
+                            var newInterfaceSignature = new DCIInterfaceSignature();
+                            newInterfaceSignature.Name = methodName;
+                            newInterfaceSignature.CodeSpan = role.CodeSpan;
+
+                            role.Interface.AddSignature(newInterfaceSignature);
+                        }
                     }
                 }
             }
-            return null;
         }
-
 
         private void InteractionReader_ReadInteractions(ClassDeclarationSyntax parentNode)
         {

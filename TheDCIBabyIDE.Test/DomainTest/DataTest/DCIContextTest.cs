@@ -24,7 +24,7 @@ namespace TheDCIBabyIDE.Test.DomainTest.DataTest
                         expect(() => dciContext.UsecaseSpan.Length > 0);
                         expect(() => dciContext.CodeSpan.Length > 0);
 
-                        expect(() => dciContext.Roles.Count == 4);
+                        expect(() => dciContext.Roles.Count == 5);
 
                         expect(() => dciContext.Roles["UnPlannedActivity"].Interface.Signatures.Count > 0);
                         expect(() => dciContext.Roles["UnPlannedActivity"].Methods.Count > 0);

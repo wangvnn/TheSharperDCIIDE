@@ -22,12 +22,14 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 
         public void AddSignature(DCIInterfaceSignature signature)
         {
-            _Signatures.Add(signature.Name, signature);
+            if (!_Signatures.ContainsKey(signature.Name))
+                _Signatures.Add(signature.Name, signature);
         }
 
         public void RemoveSignature(string name)
         {
-            _Signatures.Remove(name);
+            if (!_Signatures.ContainsKey(name))
+                _Signatures.Remove(name);
         }
     }
 }

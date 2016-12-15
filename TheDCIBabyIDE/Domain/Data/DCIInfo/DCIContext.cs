@@ -27,8 +27,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
         private Dictionary<string, DCIRole> _Roles = new Dictionary<string, DCIRole>();
         public Dictionary<string, DCIRole> Roles { get { return _Roles; } }
 
-        private Dictionary<string, DCIInteraction> _Interactions = new Dictionary<string, DCIInteraction>();
-        public Dictionary<string, DCIInteraction> Interactions { get { return _Interactions; } }
+        private List<DCIInteraction> _Interactions = new List<DCIInteraction>();
+        public List<DCIInteraction> Interactions { get { return _Interactions; } }
 
         #endregion
 
@@ -46,13 +46,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
         }
         public void AddInteraction(DCIInteraction interaction)
         {
-            if (!_Interactions.ContainsKey(interaction.Name))
-                _Interactions.Add(interaction.Name, interaction);
-        }
-
-        public void RemoveInteration(string name)
-        {
-            _Interactions.Remove(name);
+            _Interactions.Add(interaction);
         }
     }
 }

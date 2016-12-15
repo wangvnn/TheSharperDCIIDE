@@ -15,10 +15,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
         public InterfaceViewModel(DCIRoleInterface model)
             : base(model)
         {
-            foreach (var s in model.Signatures)
-            {
-                Signatures.Add(new SignatureViewModel(s.Value));
-            }
+            Show(false);
         }
 
         private ObservableCollection<SignatureViewModel> _Signatures = new ObservableCollection<SignatureViewModel>();
@@ -48,6 +45,19 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel
                 RaisePropertyChangedEvent("SelectedSignature");
             }       
 
+        }
+
+        public void Show(bool show)
+        {
+            Signatures.Clear();
+            if (show)
+            {
+                
+                foreach (var s in Model.Signatures)
+                {
+                    Signatures.Add(new SignatureViewModel(s.Value));
+                }
+            }
         }
     }
 }
