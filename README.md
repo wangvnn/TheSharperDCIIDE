@@ -35,7 +35,7 @@ Build the extention
 
 Debug:
 
-1) Open the project in Visual Studio 2013 Community Version
+1) Open the project in Visual Studio 2015 Community Version
 
 2) Project settings:
 -Start external program:
