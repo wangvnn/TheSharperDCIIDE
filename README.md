@@ -20,7 +20,7 @@ How to use:
 
 Build the extention
 
-1) Open the project in Visual Studio 2013 Community version
+1) Open the project in Visual Studio 2015 Community version
 
 2) Build release/debug version
 
