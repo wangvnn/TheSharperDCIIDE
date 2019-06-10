@@ -92,53 +92,68 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 
         public IWpfTextViewHost CreateProjectionEditor(string filePath, int start, int length, bool isReadonly = true)
         {
-            IntPtr zero = IntPtr.Zero;
-            Guid gUID = typeof(IVsTextLines).GUID;
-            ErrorHandler.ThrowOnFailure(this.GetInvisibleEditor(filePath).GetDocData(1, ref gUID, out zero));
+            //IVsInvisibleEditors are in-memory represenations of typical Visual Studio editors.
+            //Language services, highlighting and error squiggles are hooked up to these editors
+            //for us once we convert them to WpfTextViews. 
+            var invisibleEditor = GetInvisibleEditor(filePath);
 
-            IVsTextLines objectForIUnknown = (IVsTextLines)Marshal.GetObjectForIUnknown(zero);
+            var docDataPointer = IntPtr.Zero;
+            Guid guidIVsTextLines = typeof(IVsTextLines).GUID;
 
-            IVsCodeWindow window = EditorAdaptersFactoryService.CreateVsCodeWindowAdapter(OLEServiceProvider);
-            ErrorHandler.ThrowOnFailure(window.SetBuffer(objectForIUnknown));
+            ErrorHandler.ThrowOnFailure(invisibleEditor.GetDocData(
+                fEnsureWritable: 1
+                , riid: ref guidIVsTextLines
+                , ppDocData: out docDataPointer));
 
-            IVsTextView view;
-            ErrorHandler.ThrowOnFailure(window.GetPrimaryView(out view));
+            IVsTextLines docData = (IVsTextLines)Marshal.GetObjectForIUnknown(docDataPointer);
 
-            // NOTE: using MEF 
-            // add new ROLE to mark this as DCI BABY IDE so that we can provide MEF service provider to provide as special ViewModel for it.
+            // This will actually be defined as _codewindowbehaviorflags2.CWB_DISABLEDIFF once the latest version of
+            // Microsoft.VisualStudio.TextManager.Interop.16.0.DesignTime is published. Setting the flag will have no effect
+            // on releases prior to d16.0.
+            const _codewindowbehaviorflags CWB_DISABLEDIFF = (_codewindowbehaviorflags)0x04;
 
-            string[] dciIDERole = new string[] { DCI_BABY_IDE };
-            IEnumerable<string> roles = TextEditorFactoryService.DefaultRoles.Where<string>( role => role != "ZOOMABLE").Concat<string>(dciIDERole);
-            Guid riidKey = VSConstants.VsTextBufferUserDataGuid.VsTextViewRoles_guid;
+            //Create a code window adapter
+            var codeWindow = EditorAdaptersFactoryService.CreateVsCodeWindowAdapter(OLEServiceProvider);
 
-            // NOTE: using MEF
-            // this TextView creation will look for our TextViewModel Provider to provide TextViewModel
-            ((IVsUserData)window).SetData(ref riidKey, TextEditorFactoryService.CreateTextViewRoleSet(roles).ToString());
+            // You need to disable the dropdown, splitter and -- for d16.0 -- diff since you are extracting the code window's TextViewHost and using it.
+            ((IVsCodeWindowEx)codeWindow).Initialize((uint)_codewindowbehaviorflags.CWB_DISABLESPLITTER | (uint)_codewindowbehaviorflags.CWB_DISABLEDROPDOWNBAR | (uint)CWB_DISABLEDIFF,
+                                                     VSUSERCONTEXTATTRIBUTEUSAGE.VSUC_Usage_Filter,
+                                                     string.Empty,
+                                                     string.Empty,
+                                                     0,
+                                                     new INITVIEW[1]);
 
-            IVsTextBuffer bufferAdapter = objectForIUnknown;
-            ITextBuffer dataBuffer = EditorAdaptersFactoryService.GetDataBuffer(bufferAdapter);
+            ErrorHandler.ThrowOnFailure(codeWindow.SetBuffer(docData));
 
-            if (dataBuffer.Properties.ContainsProperty("StartPosition"))
+            //Get a text view for our editor which we will then use to get the WPF control for that editor.
+            IVsTextView textView;
+            ErrorHandler.ThrowOnFailure(codeWindow.GetPrimaryView(out textView));
+
+            //We add our own role to this text view. Later this will allow us to selectively modify
+            //this editor without getting in the way of Visual Studio's normal editors.
+            var roles = TextEditorFactoryService.DefaultRoles.Concat(new string[] { DCI_BABY_IDE });
+
+            var vsTextBuffer = docData as IVsTextBuffer;
+            var textBuffer = EditorAdaptersFactoryService.GetDataBuffer(vsTextBuffer);
+
+            if (textBuffer.Properties.ContainsProperty("StartPosition"))
             {
-                dataBuffer.Properties.RemoveProperty("StartPosition");
+                textBuffer.Properties.RemoveProperty("StartPosition");
             }
-            if (dataBuffer.Properties.ContainsProperty("EndPosition"))
+            if (textBuffer.Properties.ContainsProperty("EndPosition"))
             {
-                dataBuffer.Properties.RemoveProperty("EndPosition");
+                textBuffer.Properties.RemoveProperty("EndPosition");
             }
 
-            dataBuffer.Properties.AddProperty("StartPosition", start);
-            dataBuffer.Properties.AddProperty("EndPosition", start + length);
+            textBuffer.Properties.AddProperty("StartPosition", start);
+            textBuffer.Properties.AddProperty("EndPosition", start + length);
+            var guid = VSConstants.VsTextBufferUserDataGuid.VsTextViewRoles_guid;
+            ((IVsUserData)codeWindow).SetData(ref guid, TextEditorFactoryService.CreateTextViewRoleSet(roles).ToString());
 
-            var host = EditorService.EditorAdaptersFactoryService.GetWpfTextViewHost(view);
-            if (isReadonly)
-            {
-                host.TextView.Options.SetOptionValue(DefaultTextViewOptions.ViewProhibitUserInputName, true);
-            }
-
-            host.TextView.Options.SetOptionValue(DefaultTextViewHostOptions.ShowMarksOptionName, true);
-            return host;
+            var textViewHost = EditorService.EditorAdaptersFactoryService.GetWpfTextViewHost(textView);
+            return textViewHost;         
         }
+
         private uint _docCookie = 0;
         public void CloseEditor()
         {
@@ -176,6 +191,11 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
 
         #endregion
 
+        /// MEF is broken in VS2019
+        /// https://developercommunity.visualstudio.com/content/problem/498617/projectionbuffertutorial-gives-error-in-dev16.html
+        /// https://developercommunity.visualstudio.com/content/problem/460954/extensions-that-use-custom-itextviewmodelprovider.html
+        /// Temporarily use this tutorial: https://github.com/JoshVarty/ProjectionBufferTutorial/blob/master/ProjectionBufferTutorial/ProjBufferToolWindow.cs
+
         #region MEF service provider point
         /// <summary>
         /// Whenever CSharp WpfTextViews are created with the CustomProjectionRole role
@@ -184,7 +204,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
         [Export(typeof(ITextViewModelProvider)), ContentType("CSharp"), TextViewRole(DCI_BABY_IDE)]
         internal class DCIBabyIDETextViewModelProvider : ITextViewModelProvider
         {
-
             public ITextViewModel CreateTextViewModel(ITextDataModel dataModel, ITextViewRoleSet roles)
             {
                 int start = (int)dataModel.DataBuffer.Properties.GetProperty("StartPosition");

@@ -2,6 +2,7 @@
 
 namespace KimHaiQuang.TheDCIBabyIDE.Services
 {
+    
     public static class VisualStudioServices
     {
         public static EnvDTE.DTE DTE

@@ -16,6 +16,7 @@ using KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo;
 using KimHaiQuang.TheDCIBabyIDE.Presentation.ViewModel.Base;
 using System.ComponentModel;
 using Microsoft.VisualStudio.Text;
+using KimHaiQuang.TheDCIBabyIDE.Presentation.Extension;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
 {
@@ -221,8 +222,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 _contextModel = value;
                 if (_contextModel != null)
                 {
-                    this.UsecaseView = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.UsecaseSpan.Start, _contextModel.UsecaseSpan.Length);
-                    this.ProjectionView = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.CodeSpan.Start, _contextModel.CodeSpan.Length);
+                    var useCaseEditor = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.UsecaseSpan.Start, _contextModel.UsecaseSpan.Length, false);
+                    this.UsecaseView = useCaseEditor;
+
+                    this.ProjectionView = EditorService.Instance.CreateProjectionEditor(_contextModel.Filepath, _contextModel.CodeSpan.Start, _contextModel.CodeSpan.Length, false);
                     this.InteractionViewModel = new ContextViewModel(_contextModel);
                 }
                 else
@@ -285,9 +288,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 {
                     (_UsecaseView as UIElement).LostKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
                     (_UsecaseView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
+                    _UsecaseView.HostControl.DisconnectIt();
                 }
-
-                (_BabyIDEEditor.View.Content as BabyIDEEditorView).UsecaseView.Content = _UsecaseView;
+                
+                (_BabyIDEEditor.View.Content as BabyIDEEditorView).UsecaseView.Content = _UsecaseView?.HostControl;
             }
         }
 
@@ -312,8 +316,10 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 {
                     (_ProjectionView as UIElement).LostKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_LostKeyboardFocus);
                     (_ProjectionView as UIElement).GotKeyboardFocus += new KeyboardFocusChangedEventHandler(this.Editor_GotKeyboardFocus);
+                    _ProjectionView.HostControl.DisconnectIt();
                 }
-                (_BabyIDEEditor.View.Content as BabyIDEEditorView).ProjectionCodeView.Content = _ProjectionView;
+                
+                (_BabyIDEEditor.View.Content as BabyIDEEditorView).ProjectionCodeView.Content = _ProjectionView?.HostControl;
             }
         }
 
@@ -407,6 +413,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
         }
 
 
-        #endregion
+        #endregion        
     }
 }
