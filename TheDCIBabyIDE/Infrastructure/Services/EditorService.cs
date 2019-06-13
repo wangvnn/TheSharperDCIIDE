@@ -195,6 +195,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Infrastructure.Services
         /// https://developercommunity.visualstudio.com/content/problem/498617/projectionbuffertutorial-gives-error-in-dev16.html
         /// https://developercommunity.visualstudio.com/content/problem/460954/extensions-that-use-custom-itextviewmodelprovider.html
         /// Temporarily use this tutorial: https://github.com/JoshVarty/ProjectionBufferTutorial/blob/master/ProjectionBufferTutorial/ProjBufferToolWindow.cs
+        /// The main reason is diff mode in text viewer in vs2019 (disabled)
 
         #region MEF service provider point
         /// <summary>

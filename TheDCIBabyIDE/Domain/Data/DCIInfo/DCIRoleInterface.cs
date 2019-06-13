@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Text;
+using System;
 using System.Collections.Generic;
 
 namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
@@ -22,7 +23,8 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
 
         public void AddSignature(DCIInterfaceSignature signature)
         {
-            if (!_Signatures.ContainsKey(signature.Name))
+            string signatureName = Char.ToUpper(signature.Name[0]) + signature.Name.Substring(1);
+            if (!_Signatures.ContainsKey(signatureName))
                 _Signatures.Add(signature.Name, signature);
         }
 

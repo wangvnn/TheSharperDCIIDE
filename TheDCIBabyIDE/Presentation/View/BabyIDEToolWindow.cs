@@ -103,7 +103,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
         {
             get
             {
-                return this.WhenShowContent();
+                return WhenShowContent();
             }
         }
 
@@ -166,7 +166,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
         #endregion
 
         #region Implementations
-
         private void WhenContructWindow()
         {
             SetupWindow();
@@ -184,7 +183,6 @@ namespace KimHaiQuang.TheDCIBabyIDE.Presentation.View
                 {
                     _BabyIDEEditor.View.Content = null;
                 }
-
             }
         }
 

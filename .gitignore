@@ -50,8 +50,9 @@ IventoDCI/obj/
 # baby ide bin obj
 TheDCIBabyIDE/bin/
 TheDCIBabyIDE/obj/
-TheDCIBabyIDE.Test/bin/
-TheDCIBabyIDE.Test/obj/
+#Tests
+TestTest/obj/
+TestTest/bin/
 
 # sou
 *.suo
@@ -64,3 +65,6 @@ UpgradeLog.htm
 
 #.vs
 .vs/
+
+#packages
+packages/

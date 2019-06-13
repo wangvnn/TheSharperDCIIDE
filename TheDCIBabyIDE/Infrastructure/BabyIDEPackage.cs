@@ -99,8 +99,18 @@ namespace KimHaiQuang.TheDCIBabyIDE
             base.Initialize();
 
             Setup();
-
             RegisterCommand();
+        }
+
+        private void Setup()
+        {
+            VisualStudioServices.ServiceProvider = this;
+            VisualStudioServices.OLEServiceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider)VisualStudioServices.ServiceProvider.GetService(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider));
+
+            VisualStudioServices.ComponentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
+
+            EditorService.Create(VisualStudioServices.ServiceProvider, VisualStudioServices.OLEServiceProvider);
+            ProjectSelectionService.Create();
         }
 
         private void RegisterCommand()
@@ -117,23 +127,6 @@ namespace KimHaiQuang.TheDCIBabyIDE
 
                 mcs.AddCommand(menuItem);
             }
-        }
-
-        private void Setup()
-        {
-            VisualStudioServices.ServiceProvider = this;
-            VisualStudioServices.OLEServiceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider)VisualStudioServices.ServiceProvider.GetService(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider));
-
-            VisualStudioServices.ComponentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
-
-            EditorService.Create(VisualStudioServices.ServiceProvider, VisualStudioServices.OLEServiceProvider);
-            ProjectSelectionService.Create();
-        }
-
-        private void WhenDisposeResource()
-        {
-            EditorService.Destroy();
-            ProjectSelectionService.Destroy();
         }
 
         private void WhenShowToolWindow(object sender, EventArgs e)
@@ -164,22 +157,29 @@ namespace KimHaiQuang.TheDCIBabyIDE
                 IVsHierarchy hierarchy = null;
                 uint itemid = VSConstants.VSITEMID_NIL;
 
-                if (!ProjectSelectionService.Instance.IsSingleProjectItemSelection(out hierarchy, out itemid)) return;
-                // Get the file path
-                string itemFullPath = ProjectSelectionService.Instance.GetItemFullPath(hierarchy, itemid);
+                if (ProjectSelectionService.Instance.IsSingleProjectItemSelection(out hierarchy, out itemid))
+                {
+                    // Get the file path
+                    string itemFullPath = ProjectSelectionService.Instance.GetItemFullPath(hierarchy, itemid);
+                    var transformFileInfo = new FileInfo(itemFullPath);
 
-                var transformFileInfo = new FileInfo(itemFullPath);
-
-                // then check if the file is named 'web.config'
-                bool isWebConfig = transformFileInfo.Extension.Contains("cs");
-                // if not leave the menu hidden
-                if (!isWebConfig) return;
-
-                menuCommand.Visible = true;
-                menuCommand.Enabled = true;
+                    // then check if the .cs file
+                    bool isCsFile = transformFileInfo.Extension.Contains("cs");
+                    // if not leave the menu hidden
+                    if (isCsFile)
+                    {
+                        menuCommand.Visible = true;
+                        menuCommand.Enabled = true;
+                    }
+                }
             }
         }
 
+        private void WhenDisposeResource()
+        {
+            EditorService.Destroy();
+            ProjectSelectionService.Destroy();
+        }
         #endregion
     }
 }
