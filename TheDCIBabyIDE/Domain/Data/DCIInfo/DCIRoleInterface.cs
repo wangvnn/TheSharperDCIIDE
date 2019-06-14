@@ -24,7 +24,7 @@ namespace KimHaiQuang.TheDCIBabyIDE.Domain.Data.DCIInfo
         public void AddSignature(DCIInterfaceSignature signature)
         {
             string signatureName = Char.ToUpper(signature.Name[0]) + signature.Name.Substring(1);
-            if (!_Signatures.ContainsKey(signatureName))
+            if (!_Signatures.ContainsKey(signatureName) && !_Signatures.ContainsKey(signature.Name))
                 _Signatures.Add(signature.Name, signature);
         }
 
