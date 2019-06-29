@@ -13,8 +13,7 @@ Tools:
 - NJasmine: https://github.com/fschwiet/DreamNJasmine
  
 Screenshots:
-- http://goo.gl/qfh5uI
-- http://goo.gl/8TjkXb
+- https://github.com/wangvnn/TheSharperDCIIDE/blob/master/SharperDCIIDE.JPG
 
 How to use:
 
@@ -47,5 +46,5 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe
 
 Usage:
 1) Install visual studio plugin TheSharperDCIIDE.vsix
-2) Open a context file
+2) Open a context file e.g. ContextFileParsingContext.cs
 3) Right click and select open in DCI IDE
