@@ -20,7 +20,7 @@ How to use:
 
 Build the extention
 
-1) Open the project in Visual Studio 2015 Community version
+1) Open the project in Visual Studio 2019 Community version
 
 2) Build release/debug version
 
@@ -35,7 +35,7 @@ Build the extention
 
 Debug:
 
-1) Open the project in Visual Studio 2015 Community Version
+1) Open the project in Visual Studio 2019 Community Version
 
 2) Project settings:
 -Start external program:
@@ -44,3 +44,8 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe
 /rootsuffix Exp /log
 
 3) F5 to run and debug
+
+Usage:
+1) Install visual studio plugin TheSharperDCIIDE.vsix
+2) Open a context file
+3) Right click and select open in DCI IDE
